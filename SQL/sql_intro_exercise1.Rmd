@@ -1,0 +1,72 @@
+---
+title: "Relational databases & SQL"
+subtitle: "Introduction with PostgreSQL"
+author: "Andreas Scharmüller"
+institute: "AG Landscape Ecology"
+date: "2020-11-16 (updated: `r Sys.Date()`)"
+output:
+  html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# PgAdmin4
+
+## Create Server
+
+- name
+- host
+
+<img src="/home/scharmueller/Projects/teaching/SQL/data/pgadmin1.png">
+
+<img src="/home/scharmueller/Projects/teaching/SQL/data/pgadmin2.png">
+
+## Create database
+
+- host: localhost
+- port: 5432
+- username: postgres
+- password: <defined during installation>
+
+<img src="/home/scharmueller/Projects/teaching/SQL/data/pgadmin3.png">
+
+## SQL Query tool
+
+<img src="/home/scharmueller/Projects/teaching/SQL/data/pgadmin4.png">
+
+# R
+
+## Read data
+```{r eval=FALSE}
+sit = readRDS('SQL/data/sit.rds')
+sam = readRDS('SQL/data/sam.rds')
+```
+
+## Write tp PostgreSQL
+
+```{r eval=FALSE}
+require(RPostgreSQL)
+
+drv = dbDriver('PostgreSQL')
+con = dbConnect(
+  drv = drv,
+  host = 'localhost',
+  port = 5432,
+  dbname = 'test',
+  user = 'postgres',
+  password = 'whatever'
+)
+
+dbWriteTable(con, name = 'sites', value = sit,
+             overwrite = TRUE, row.names = FALSE)
+
+dbDisconnect(con)
+dbUnloadDriver(drv)
+```
+
+
+
+
+
+
+
