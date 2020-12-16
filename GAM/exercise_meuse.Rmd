@@ -1,0 +1,47 @@
+---
+title: "Meuse Exercise"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+This exercise is taken from Noam Ross' [GAM course](https://noamross.github.io/gams-in-r-course/)
+
+# Setup
+```{r setup}
+require(mgcv)
+```
+
+# Data
+```{r data}
+data(meuse, package = 'sp')
+head(meuse)
+```
+
+# Task
+
+## Model Spatial interaction
+  
+- Model cadmium in response to the coordinates
+- Try Gaussian and Gamma family distributions
+- Include the coordinates in an interaction term
+  - Which smooth term to use?
+
+## Model spatial interaction and additional covariates
+
+- Add dist and elev to model
+- Does it improve the quality of the model?
+
+## Visualize the better fit model
+
+# Variables
+
+x,y --> coordinates<br>
+cadmium, copper, lead, zinc --> responses<br>
+elev --> elevation<br>
+dist --> distance from meuse river<br>
+dist.m --> distance in meter<br>
+om --> organic matter<br>
+soil --> soil type<br>
+lime --> lime factor<br>
+

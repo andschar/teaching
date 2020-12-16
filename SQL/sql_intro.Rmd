@@ -16,8 +16,11 @@ editor_options:
 ---
 
 ```{r setup, echo=FALSE, include=FALSE}
+# packages
 require(tweetrmd)
-knitr::opts_chunk$set(dpi=300,fig.width=7)
+
+# knitr settings
+knitr::opts_chunk$set(dpi = 300, fig.width = 7)
 ```
 
 ## Installation
@@ -571,6 +574,33 @@ CREATE new_table (
   INNER JOIN my_table2 tab2 ON tab1.id = tab2.id
 )
 ```
+
+---
+## Queries - INSERT INTO
+
+```sql
+INSERT INTO my_table (id)
+
+```
+
+---
+## Queries - UPDATE
+
+```sql
+UPDATE my_table SET
+  col = 
+```
+
+---
+## Queries - WINDOW FUNCTIONS
+
+
+
+---
+## Indexes
+
+TODO
+
 
 ---
 ## Material

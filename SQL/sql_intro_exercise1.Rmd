@@ -45,6 +45,7 @@ sam = readRDS('SQL/data/sam.rds')
 ## Write tp PostgreSQL
 
 ```{r eval=FALSE}
+require(data.table)
 require(RPostgreSQL)
 
 drv = dbDriver('PostgreSQL')
@@ -52,12 +53,15 @@ con = dbConnect(
   drv = drv,
   host = 'localhost',
   port = 5432,
-  dbname = 'test',
+  dbname = 'andreas',
   user = 'postgres',
-  password = 'whatever'
+  password = 'test'
 )
 
 dbWriteTable(con, name = 'sites', value = sit,
+             overwrite = TRUE, row.names = FALSE)
+
+dbWriteTable(con, name = 'samples', value = sam,
              overwrite = TRUE, row.names = FALSE)
 
 dbDisconnect(con)

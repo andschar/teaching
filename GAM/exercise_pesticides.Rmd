@@ -1,0 +1,62 @@
+---
+title: "Pesticides"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Setup
+```{r echo=FALSE, include=FALSE}
+# packages
+require(data.table)
+require(mgcv)
+require(ggplot2)
+require(gratia)
+require(mgcViz)
+
+# plot theme
+theme_set(theme_minimal())
+```
+
+# Data
+```{r}
+pest = readRDS('GAM/data/pesticides.rds')
+```
+
+# Prepare
+```{r}
+sit_pend = c('BW_CYY200', 'BW_CEN901', 'BW_CTA913', 'BW_CKO905',
+             'SN_OBF40500', 'SN_OBF16700', 'SN_OBF32300')
+
+pend = pest[ name == 'Pendimethalin' &
+               site_id %in% sit_pend ]
+```
+
+# Add variables
+
+```{r}
+pend[ , doy := yday(date) ] # data.table function to extract day of year (doy)
+pend[ , year := year(date) ]
+pend[ , pa := as.numeric(as.logical(value_fin)) ] # presence-absence
+```
+
+# Task
+
+## Model seasonal and long-term trends of pendimethalin
+
+- Model seasonal presence (`pa`) of pendimethalin
+  - Does the presence change throughout the course of the year?
+
+- Model long-term presence (`pa`) of pendimethalin
+  - Does the presence change on the long run?
+  
+- Include sites (`site_id`) as a Random Effect in the GAM
+  - Do you have to change the data type of `site_id` to use it in a model?
+  - Does this improve the model fit?
+  
+- Include the covariates catchment size (`area_sqkm`) & percentage agriculture (`atkis_perc`)
+  - Does this improve the model fit?
+  
+- Predict and plot the best model
+
+
