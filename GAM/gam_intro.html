@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 ## Generalized Additive Models (GAM)
 ### Andreas Scharmüller
 ### AG Landscape Ecology
-### 2020/11/09 (updated: 2020-12-16)
+### 2020/11/09 (updated: 2020-12-17)
 
 ---
 
@@ -669,6 +669,7 @@ setDT(new) # convert to data.table
 # predict
 prd = predict(mod,
               newdata = new,
+              type = 'response',
               exclude = 's(b.depth)', # exclude of a variable
               se.fit = TRUE) # include standard errors
 # update newdata
