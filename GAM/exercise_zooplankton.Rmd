@@ -15,11 +15,9 @@ require(mgcv)
 require(gratia)
 ```
 
-
 # Data
-
 ```{r}
-zop = read.csv('data/zooplankton_example.csv')
+zop = read.csv('GAM/data/zooplankton_example.csv')
 head(zop)
 summary(zop)
 ```
@@ -38,16 +36,16 @@ density_scaled = zooplankton density scaled (to the area and volume of the net)
 
 ## Estimate seasonal variability of Cyclopoid copepods in different lakes
 
-- use density_adj as a response
+- Use density_adj as a response
   - Which distributional family would you pick?
-- use the variable day to model possible seasonl patterns
+- use the variable day to model possible seasonal patterns
   - which smoothing basis wold you use for seasonal data?
-- account for the different lakes in the model
-  - as random effects
-  - as factor-smooth interaction (using the `bs = 'fs'` argument)
-  - as factor-smooth interaction (using the `by =` argument)
-- account for inter-year variability in each lake
-  - make year a factor
+- Account for the different lakes in the model
+  - As random effects
+  - As factor-smooth interaction (using the `bs = 'fs'` argument)
+  - As factor-smooth interaction (using the `by =` argument)
+- Account for inter-year variability in each lake
+  - Make year a factor
 
 - Pick the best model
 
