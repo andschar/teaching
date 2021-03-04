@@ -13,12 +13,15 @@ Model seasonal variation of Zooplankton densities. The data is taken from the ar
 ```{r}
 require(mgcv)
 require(gratia)
+
+# wd
+prj = '/home/scharmueller/Projects/teaching/GAM'
 ```
 
 
 # Data
 ```{r}
-zop = read.csv('GAM/data/zooplankton_example.csv')
+zop = read.csv(file.path(prj, 'data/zooplankton_example.csv'))
 head(zop)
 summary(zop)
 ```
@@ -74,7 +77,6 @@ summary(zoo1)
 varying intercepts
 ```{r}
 zoo_daG = gam(density_adj ~ s(day, bs = 'cc', k = 10) +
-                            s(lake_f, bs = 're') +
                             s(lake_f, year_f, bs = 're'),
               data = damo,
               # family = gaussian(link = 'log'),

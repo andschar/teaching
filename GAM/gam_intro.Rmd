@@ -3,7 +3,7 @@ title: "Moving Beyond Linearity"
 subtitle: "Generalized Additive Models (GAM)"
 author: "Andreas Scharmüller"
 institute: "AG Landscape Ecology"
-date: "2020/11/09 (updated: `r Sys.Date()`)"
+date: "2020-11-09 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -26,6 +26,7 @@ require(gratia) # GAM helper functions
 require(gamair) # Mackarel data set & other GAM Introduction data sets by S. Wood
 require(tweetrmd)
 require(andmisc) # Personal ggplot2 theme
+require(tjmisc)
 
 # switches
 online = FALSE
@@ -39,7 +40,9 @@ creddir = file.path(prj, 'cred')
 knitr::opts_chunk$set(dpi = 300, fig.width = 7)
 
 # plot theme
-theme_set(andmisc::theme_as(base_family = 'sans'))
+theme_set(andmisc::theme_as(base_family = 'sans',
+                            base_size = 10,
+                            text_size = 12))
 ```
 
 ```{r data, echo=FALSE, include=FALSE}
@@ -102,8 +105,6 @@ sim$y = sim$y + 5
 sim$x = sim$x2
 
 sim = sim[ with(sim, order(x)), ] # TODO Is this the right order?
-
-
 ```
 
 class: center, inverse, middle
@@ -186,8 +187,13 @@ ggplot(sim, aes(y = y, x = x)) +
 # Polynomial Regression
 
 - Extra predictors, obtained by raising the original predictors to a power
+
 - Specific patterns, not very flexible
+  
+  - Global not Local
+
 - Might lead to poor residuals, predictions, extrapolations
+  
   - Especially at the boundaries
 
 
@@ -227,6 +233,10 @@ ggplot(sim, aes(x, y)) +
                      labels = c('3rd order', '9th order'))
 ```
 
+---
+class: center, inverse, middle
+
+# Generalized Additive Models (GAMs)
 
 ---
 # Generalized Additive Models (GAM)
@@ -259,11 +269,6 @@ ggplot(sim, aes(y = y, x = x)) +
 ```
 
 ---
-class: center, inverse, middle
-
-# Generalized Additive Models (GAMs)
-
----
 # Generalized Additive Models (GAMs)
 
 <br><br><br>
@@ -272,68 +277,153 @@ class: center, inverse, middle
 
 
 .footnote[
-https://noamross.github.io/gams-in-r-course
+<https://noamross.github.io/gams-in-r-course>
 ]
 
 ---
 # Generalized Additive Models (GAMs)
 
-<https://www.fromthebottomoftheheap.net>
+<!-- NOTE doesn't work anymore -->
+<!-- tweetrmd::include_tweet("https://twitter.com/ucfagls/status/842444686513991680") -->
 
-```{r echo=FALSE}
-tweetrmd::include_tweet("https://twitter.com/ucfagls/status/842444686513991680")
-```
+<blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">140 char vrsn<br><br>1 GAMs are just GLMs<br>2 GAMs fit wiggly terms<br>3 use + s(foo) not foo in frmla<br>4 use method = "REML"<br>5 gam.check()</p>&mdash; Dr Gavin Simpson 😷🇪🇺 (@ucfagls) <a href="https://twitter.com/ucfagls/status/842444686513991680?ref_src=twsrc%5Etfw">March 16, 2017</a></blockquote>
+
+.footnote[
+<https://www.fromthebottomoftheheap.net>
+]
 
 ---
 # Generalized Additive Models (GAMs)
 
-- GLM + Smooth function
-
-$$y_i = \beta_0 + \beta_1f_1(x_{1i}) + \beta_2f_2(x_{2i}) + \beta_3f_3(x_{3i},x_{4i}) + \epsilon_i$$
+$$y_i = \beta_0 + f_1(x_{1i}) + f_2(x_{2i}) + f_3(x_{3i},x_{4i}) + ... + \epsilon_i, \epsilon \sim N(0,\sigma^2)$$
 
 $$\mathbb{E}(Y) = g^{-1} \bigg( \beta_0+ \sum_{j=1}^Jf_j(x_j)\bigg)$$
 $$f_j(x_j) = \sum_{k=1}^K \beta_{j,k} b_{j,k} (x_j)$$
-- $K$ Basis functions $b_{j,k}$
-  - Represent the smoother $f()$
 
-- Coefficients $\beta_{j,k}$
+- Smoothing function: $f()$
 
-- Smoothing penalty
+    - Splines
+    
+    - Konts: $K$
 
----
-# Basis functions
+- $K$ Basis functions: $b_{j,k}$
 
-__IDEA:__ Family of functions or transformations that can be applied to $x$
+- $K$ Coefficients: $\beta_{j,k}$
 
-$$y_i = \beta_0 + \beta_1f_1(x_i) + \beta_2f_2(x_i) + \beta_3f_3(x_i)+...+\beta_Kf_K(x_i) + \epsilon_i$$
-
-- Polynomial basis function:
-$$f_j(x_i) = x_i^j$$
-- Piecewise constant basis function:
-
-$$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$
-#### Advantage
-
-- Flexible fitting
-- Least Squares to fit unknown regression coefficients
-    - Standard errors
-    - F-statistics
+- Smoothing parameter
 
 ---
-# Basis functions
+class: center, inverse, middle
+# Splines
 
-- Knots
+<img src="https://s3files.core77.com/blog/images/513221_81_55368_4VoVB83F4.jpg" width="50%">
 
-- Isotropic Smoothing
-
-  - Thin Plate Splines
-
-  - Cubic Regression Splines
-  
-- Tensor Product Smooth Interactions
+.footnote[
+https://www.core77.com/posts/55368/When-Splines-Were-Physical-Objects
+]
 
 ---
-# Basis functions
+# Splines
+
+- Splines replace a predictor variable, with a set of synthetic predictor variables.
+
+- Family of functions or transformations that can be applied to $x$
+
+    - Polynomial basis function
+    
+    $$f_j(x_i) = x_i^j$$
+
+    - Piecewise constant basis function:
+
+    $$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$
+- Penalized splines reduce wiggliness
+
+.footnote[
+https://www.youtube.com/watch?v=ENxTrFf9a7c&t=2226
+
+https://www.tjmahr.com/random-effects-penalized-splines-same-thing/
+]
+
+---
+# Splines
+
+### Example: Airquality
+
+```{r}
+# data
+airqu = na.omit(airquality)
+head(airqu)
+```
+
+```{r}
+# model
+air1 = gam(Ozone ~ s(Wind, bs = 'cr', k = 7), # Cubic Regr. Spline
+           data = airqu,
+           method = 'REML')
+```
+
+```{r echo=FALSE, include=FALSE}
+# NOTE hidden code
+# helper function
+ggmatplot = tjmisc::ggmatplot
+# predict
+lpm = predict(air1, type = 'lpmatrix')
+lpm2 = cbind(wind = airqu$Wind, lpm)
+airqu$fit1 = fitted(air1)
+```
+
+---
+# Splines
+
+### Example: Airquality
+
+```{r echo=FALSE, fig.height=4}
+# plot: fit
+ggplot(airqu, aes(y = Ozone, x = Wind)) +
+  geom_point() +
+  geom_line(aes(y = fit1),
+            color = 'maroon',
+            size = 1.5)
+```
+
+---
+# Splines
+
+```{r eval=FALSE}
+predict(air1, type = 'lpmatrix')
+```
+
+```{r echo=FALSE, fig.height=4}
+# plot: model matrix
+ggmatplot(lpm2, x_axis_column = 1) +
+  labs(title = 'Unweighted Basis Functions',
+       y = 'Ozone', x = 'Wind')
+```
+
+---
+# Splines
+
+```{r eval=FALSE}
+predict(air1, type = 'lpmatrix') %*% diag(coef(air1))
+```
+
+```{r echo=FALSE, fig.height=4}
+# plot: WEighted
+lpm_weighted = lpm %*% diag(coef(air1))
+lpm2_weighted = cbind(airqu$Wind, lpm_weighted)
+# plot: Weighted Fit
+ggmatplot(lpm2_weighted, x_axis_column = 1) +
+  stat_summary(aes(group = 1),
+               color = "maroon", 
+               fun = sum, 
+               geom = "line", 
+               size = 1.5) +
+  labs(title = 'Weighted Sum of Basis Functions',
+       y = 'Ozone', x = 'Wind')
+```
+
+---
+# Splines
 
 ```{r echo=FALSE, fig.height=5}
 # TODO how should the knots be ordered?
@@ -369,7 +459,9 @@ layout(1)
 ```
 
 ---
-# Complexity
+# Splines
+
+### Complexity
 
 ```{r}
 lm1 = lm(y ~ x, data = sim)
@@ -382,84 +474,109 @@ coef(gam1)
 ```
 
 ---
-# Basis Functions
+# Splines
 
-```{r eval=FALSE}
-gam(y ~ s(x1, k = 3),
-    data = data)
+```{r}
+air2 = gam(Ozone ~ s(Wind, bs = 'cr', k = 3), # Cubic Regr. Spline
+           data = airqu,
+           method = 'REML')
 ```
 
-```{r echo=FALSE, fig.width=6, fig.height=3}
-oc1 = gam(SP ~ s(P, k = 3),
-          data = oc,
-          method = 'REML')
-oc2 = gam(SP ~ s(P, k = -1),
-          data = oc,
-          method = 'REML')
-oc$pr1 = predict(oc1, type = 'response')
-oc$pr2 = predict(oc2, type = 'response')
-
-ggplot(oc, aes(x = P)) +
-  geom_point(aes(y = SP)) +
-  geom_line(aes(y = pr1), col = 'blue') +
-  labs(x = 'x', y = 'y')
-```
-
----
-# Basis Functions
-
-```{r eval=FALSE}
-gam(y ~ s(x1),
-    data = data)
-```
-
-```{r echo=FALSE, fig.width=6, fig.height=3}
-oc1 = gam(SP ~ s(P, k = 3),
-          data = oc,
-          method = 'REML')
-oc2 = gam(SP ~ s(P, k = -1),
-          data = oc,
-          method = 'REML')
-oc$pr1 = predict(oc1, type = 'response')
-oc$pr2 = predict(oc2, type = 'response')
-
-ggplot(oc, aes(x = P)) +
-  geom_point(aes(y = SP)) +
-  geom_line(aes(y = pr1), col = 'blue') +
-  geom_line(aes(y = pr2), col = 'red') +
-  labs(x = 'x', y = 'y')
+```{r echo=FALSE, fig.height=3}
+airqu$fit2 = fitted(air2)
+ggplot(airqu, aes(y = Ozone, x = Wind)) +
+  geom_point() +
+  geom_line(aes(y = fit1, color = 'k = 7'),
+            size = 1.5) +
+  geom_line(aes(y = fit2, color = 'k = 3'),
+            size = 1.5) +
+  scale_color_manual(values = c("k = 7" = 'maroon',
+                                "k = 3" = 'goldenrod'),
+                     name = NULL)
 ```
 
 ---
-# Basis Functions
+# Splines - Knots
 
 Check for k:
 
 ```{r eval=FALSE}
-gam.check(oc1)
+gam.check(air2)
 ```
 
 ```{r}
-k.check(oc1)
+k.check(air1) # k = 7
+```
+
+```{r}
+k.check(air2) # k = 3
 ```
 
 --
 If p-value is low, k might be too small
 
 ---
+# Overfitting?
+
+### Large basis size (knots) lead to overfitting?
+
+```{r}
+air3 = gam(Ozone ~ s(Wind, bs = 'cr',
+                     k = length(unique(airqu$Wind))), # 29
+           data = airqu,
+           method = 'REML')
+```
+
+```{r echo=FALSE, fig.height=3}
+airqu$fit3 = fitted(air3)
+ggplot(airqu, aes(y = Ozone, x = Wind)) +
+  geom_point() +
+  geom_line(aes(y = fit1, color = 'k = 29'),
+            size = 1.5) +
+  scale_color_manual(values = c("k = 29" = 'darkgreen'),
+                     name = NULL)
+```
+
+---
+# Overfitting?
+
+### SOLUTION:
+
+Penalize departure from smoothness:
+
+
+$$P(f) = \int f''(x)^2 dx = \beta^T\mathbf{S}\beta$$
+
+.footnote[
+<https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf>
+]
+
+---
 # Smoothing
 
-$$Fit = Likelihood - \lambda \times Wiggliness$$<sup>1</sup>
+$$Fit = Likelihood - \lambda \times Wiggliness$$
 
-$$\sum_{i=1}^n (y_i - g(x_i))^2 + \lambda \int g''(t)^2dt$$
+<!-- OLD formula -->
+<!-- $$\sum_{i=1}^n (y_i - g(x_i))^2 + \lambda \int g''(t)^2dt$$ -->
+
+
+$$\hat{\beta} = \operatorname{arg min}_\beta \|y-X\beta\|^2 + \lambda\beta^TS\beta$$
+
 
 - Likelihood: How well a GAM captures patterns in the data
+
 - Wiggliness: Complexity of a smooth
+
+  - Penalty matrix: $S$
+
 - Smoothing parameter $\lambda$ is optimized in `gam()` 
+  
   - Controls the trade-off between Likelihood and Wiggliness
 
 .footnote[
-[1] <https://noamross.github.io/gams-in-r-course>
+<https://noamross.github.io/gams-in-r-course>
+
+<https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf>
 ]
 
 ---
@@ -534,6 +651,10 @@ cowplot::plot_grid(gg_sp1, gg_sp2, gg_sp3,
 --
 
 __The R-package does that for you!__
+
+.footnote[
+Smoothness selection alogrithms: <https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/smoothness.pdf>
+]
 
 ---
 class: center, inverse, middle
@@ -647,15 +768,43 @@ gam(y ~ te(x1, x2, k = c(4,8))) # interaction on different scales
 ```
 
 ---
-class: center, inverse, middle
 # Splines
 
----
-# Splines
+- Thin Plate Regression Splines (TPRS)
 
-__Thin Plate__ regression spline
+    - Default
+    
+    - Computationally more demanding (CRS)
 
-- Default
+- Cubic Regression Splines (CRS)
+
+    - Computationally less demanding
+    
+    - Cyclic Cubic Regression Splines
+
+- Random Effects
+
+- Different penalty matrices: $S$
+
+
+.footnote[
+<https://stats.stackexchange.com/questions/305338/adaptive-gam-smooths-in-mgcv>
+]
+
+<!-- --- -->
+<!-- # Splines -->
+
+<!-- __Thin Plate__ Regression Splines -->
+
+<!-- - Any number of dimensions -->
+
+<!-- - Smoothing is the same (isotropy, rotational invariance) -->
+
+<!-- - Second-order: -->
+
+<!--     - Penalty is porportionate to the integral of the squared second derivative -->
+
+<!--     - $m=1$: Penalizing squared first derivatives. -->
 
 ```{r eval=FALSE}
 gam(y ~ s(x, bs = 'tp'),
@@ -693,7 +842,6 @@ gam(y ~ s(x, y, bs = 'so', xt = list(bnd = boundary_polygon)),
   <caption>https://fromthebottomoftheheap.net/2016/03/27/soap-film-smoothers</caption>
 </figure>
 
-
 ---
 class: center, inverse, middle
 # Random Effects
@@ -723,6 +871,21 @@ gamm(y ~ s(x),
      random = list(fac = ~1))
 ```
 
+---
+# Random Effects
+
+"Random effects and penalized splines are the same thing."
+
+<!-- tweetrmd::include_tweet("https://twitter.com/ericJpedersen/status/1293508069016637440") -->
+
+```{r echo=FALSE}
+knitr::include_graphics("https://pbs.twimg.com/media/EfN2u76XgAEzBC4?format=jpg&name=small")
+```
+
+.footnote[
+<https://twitter.com/ericJpedersen/status/1293508069016637440>
+<https://www.tjmahr.com/random-effects-penalized-splines-same-thing>
+]
 
 ---
 class: center, inverse, middle
@@ -743,7 +906,7 @@ head(mack, n = 3)
   - Sea bed depth at sampling location: `b.depth`
   - Water salinity: `salinity` 
   
-.foot-note[
+.footnote[
 <https://cran.r-project.org/web/packages/gamair/gamair.pdf>
 ]
 
@@ -753,7 +916,7 @@ head(mack, n = 3)
 ```{r}
 mod = gam(egg.count ~ s(b.depth) + s(salinity),
           data = mack,
-          family = 'poisson')
+          family = 'nb')
 ```
 
 ---
@@ -813,17 +976,11 @@ new[ , `:=`
 
 ---
 # Model plot
-```{r, fig.height=3.5}
+```{r, fig.height=3.5, warning=FALSE}
 ggplot(new, aes(y = fit, x = salinity)) +
   geom_line() +
+  geom_point(data = mack, aes(y = egg.count)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1)
-```
-
----
-# Model summary
-
-```{r echo=FALSE}
-summary(mod)
 ```
 
 ---
@@ -872,8 +1029,8 @@ gam.check(mt2)
 - Double penalty approach
   - `select = TRUE`
   - Adds second penalty to all terms
-    - Similar to ridge regression, lasso
-    - Disadvantage: Each term requires two smoothness parameters to be estimates
+    - Penalizes the NULL space
+    - "Shrinkage", similar to Ridge Regression, Lasso
 
 ```{r, eval=FALSE}
 gam(y ~ s(x1) + s(x2, bs = 'ts') + s(x3),
@@ -890,9 +1047,18 @@ Marra & Wood (2011)
 # Model selection
 
 - AIC
+
 - Expert judgement
+
 - Computational time
-- Inferential goals of the study
+
+- __Inferential goals of the study__
+
+
+.footnote[
+<https://stats.stackexchange.com/questions/274151/anova-to-compare-models>
+]
+
 
 ---
 class: center, middle
@@ -902,10 +1068,10 @@ class: center, middle
 
 ---
 class: center, inverse, middle
-# Visualisation
+# Visualization
 
 ---
-# Visualisation
+# Visualization
 
 ```{r}
 ir1 = gam(Sepal.Length ~ s(Petal.Length),
@@ -915,7 +1081,7 @@ ir1 = gam(Sepal.Length ~ s(Petal.Length),
 ```
 
 ---
-# Visualisation
+# Visualization
 
 Partial effect plots
 
@@ -934,7 +1100,7 @@ draw(ir1)
 ]
 
 ---
-# Visualisation
+# Visualization
 
 Multiple covariates
 
@@ -946,7 +1112,7 @@ mt1 = gam(mpg ~ s(disp) + s(hp),
 ```
 
 ---
-# Visualisation
+# Visualization
 
 ```{r, fig.width=8, fig.height=4.5}
 vis.gam(mt1, # GAM object
@@ -965,7 +1131,7 @@ disp: displacement (German: Hubraum)<br>
 hp: horsepower<br>
 
 ---
-# Visualisation
+# Visualization
 
 ```{r, fig.width=8, fig.height=4.5}
 vis.gam(mt1, # GAM object
@@ -995,7 +1161,7 @@ class: center, inverse, middle
 # Hierarchical GAMs
 
 <figure>
-  <img src="data/hgam_concept.png">
+  <img src="data/hgam_concept.png" width="80%">
   <caption>Pedersen et al. (2019)</caption>
 </figure>
 
@@ -1004,60 +1170,285 @@ class: center, inverse, middle
 - Ignoring inherent grouping would miss individual optima
 
 ---
-# Global Smoother
+# Hierarchical GAMs
+
+- Should there be a common smoother or a smoother for each group?
+
+- Do all group-specific smoothers have the __same wiggliness__ or
+should each group wiggly independently (own smoothing parameter)?
+
+- Will the smoothers for each group have a __similar shape__?
+
+---
+# Hierarchical GAMs
+
+<figure>
+  <img src="data/hgam_possibilities.png" width="60%">
+  <caption>Pedersen et al. (2019)</caption>
+</figure>
+
+---
+## Hierarchical GAM (HGAM)
+
+### Chlortoluron
+
+```{r echo=FALSE}
+# load
+dat = readRDS(file.path(prj, 'GAM/data/chlortoluron.rds'))
+# prepare
+dat[ , doy := yday(date) ]
+dat[ , site_id_f := as.factor(site_id) ]
+```
+
+```{r}
+dat[ , head(.SD, 2), site_id]
+```
+
+---
+## Hierarchical GAM (HGAM)
+
+### Chlortoluron
+
+```{r echo=FALSE, fig.height=4}
+ggplot(dat, aes(x = doy)) +
+  geom_point(aes(y = value_fin, col = site_id)) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(y = 'Concentration (ug/l)',
+       x = NULL)
+```
+
+---
+## No HGAM
+
+```{r}
+m0 = gam(value_fin ~ s(doy, bs = 'cc', k = 12),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+```{r echo=FALSE, fig.height=3.5}
+# summary(m0)
+dat[ , f0 := fitted(m0) ]
+ggplot(dat, aes(x = doy)) +
+  geom_point(aes(y = value_fin, col = site_id)) +
+  geom_line(aes(y = f0), size = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (0)',
+       subtitle = paste0('AIC: ', round(AIC(m0)),
+                         '; Dev. expl.: ', round(summary(m0)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
+```
+
+---
+## HGAM - Global Smooth
+
+```{r}
+mG = gam(value_fin ~
+           s(doy, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
 
 - Single global smooth term for each variable
+
 - Level-individual __random effect intercepts__ (`bs = 're'`)
+
 - Mixed models (like in lme4, nlme)
 
+---
+## HGAM - Global Smooth
+
 ```{r}
-spr_G = gam(logSize ~ s(days) +
-                      s(plot, bs = 're'),
-            data = Spruce,
-            method = 'REML')
+mG = gam(value_fin ~
+           s(doy, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
 ```
 
-```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5}
-plot(spr_G, pages = 1, main = NULL)
+```{r echo=FALSE, fig.height=3.5}
+# summary(mG)
+dat[ , fG := fitted(mG) ]
+ggplot(dat, aes(x = doy, col = site_id)) +
+  geom_point(aes(y = value_fin)) +
+  geom_line(aes(y = fG), lwd = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (G)',
+       subtitle = paste0('AIC: ', round(AIC(mG)),
+                         '; Dev. expl.: ', round(summary(mG)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
 ```
 
 ---
-# Global Smoother + Group Level Smoother
+## HGAM - Global + Shared Group Level Smooth
+
+```{r eval=FALSE}
+mGS = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+            s(site_id_f, bs = 're'), # not explicitly needed
+          data = dat,
+          family = Gamma(link = 'log'))
+```
 
 - Factor-smooth interaction (`bs = 'fs'`)
-- Single global smooth term for each variable
-- __Varying slopes__
-- Same wiggliness (i.e. complexity) of smooths
 
-```{r}
-spr_GS = gam(logSize ~ s(days, plot, bs = 'fs'),
-             data = Spruce,
-             method = 'REML')
+- Single global smooth term for each variable
+
+- Varying slopes
+
+- Copy of each set of basis functions, 
+
+- Penalizing functions too far away from the average
+
+- __Similar wiggliness__, one smoothing parameter
+
+---
+## HGAM - Global + Shared Group Level Smooth
+
+```{r warning=FALSE}
+mGS = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+            s(site_id_f, bs = 're'), # not explicitly needed
+          data = dat,
+          family = Gamma(link = 'log'))
 ```
 
-```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5}
-plot(spr_GS, pages = 1, main = NULL)
+```{r echo=FALSE, fig.height=3.5}
+# summary(mGS)
+dat[ , fGS := fitted(mGS) ]
+ggplot(dat, aes(x = doy, col = site_id)) +
+  geom_point(aes(y = value_fin), size = 0.9) +
+  geom_line(aes(y = fGS), size = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (GS)',
+       subtitle = paste0('AIC: ', round(AIC(mGS)),
+                         '; Dev. expl.: ', round(summary(mGS)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
 ```
 
 ---
-# Global Smoother + Group Level Smoother
+## HGAM - Global + Individual Group Level Smooth
+
+```{r eval=FALSE}
+mGI = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, by = site_id_f, bs = 'cc', k = 12) +
+            s(site_id_f, bs = 're'),
+          data = dat,
+          family = Gamma(link = 'log'))
+```
 
 - `s(x, by = fac)` and `s(fac, bs = 're')`
+
 - Similar to GS
+
 - Varying slopes
-- __Different wiggliness__ (i.e. complexity) of smooths
 
-```{r}
-spr_GI = gam(logSize ~ s(days) +
-                       s(days, by = plot) +
-                       s(plot, bs = 're'),
-            data = Spruce,
-            method = 'REML')
+- __Different wiggliness__, multiple smoothing parameters
+
+- Useful: Different wiggliness expected
+
+---
+## HGAM - Global + Individual Group Level Smooth
+
+```{r warning=FALSE}
+mGI = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, by = site_id_f, bs = 'cc', k = 12) +
+            s(site_id_f, bs = 're'),
+          data = dat,
+          family = Gamma(link = 'log'))
 ```
 
-```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5}
-plot(spr_GI, pages = 1)
+```{r echo=FALSE, fig.height=3.5}
+# summary(mGI)
+dat[ , fGI := fitted(mGI) ]
+ggplot(dat, aes(x = doy, col = site_id)) +
+  geom_point(aes(y = value_fin), size = 0.9) +
+  geom_line(aes(y = fGI), size = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (GI)',
+       subtitle = paste0('AIC: ', round(AIC(mGI)),
+                         '; Dev. expl.: ', round(summary(mGI)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
 ```
+
+---
+## HGAM - Only Shared Group Level Smooth
+
+```{r warning=FALSE}
+mS = gam(value_fin ~
+           s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+           s(site_id_f, bs = 're'), # not explicitly needed
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+```{r echo=FALSE, fig.height=3.5}
+# summary(mS)
+dat[ , fS := fitted(mS) ]
+ggplot(dat, aes(x = doy, col = site_id)) +
+  geom_point(aes(y = value_fin), size = 0.9) +
+  geom_line(aes(y = fS), size = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (S)',
+       subtitle = paste0('AIC: ', round(AIC(mS)),
+                         '; Dev. expl.: ', round(summary(mS)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
+```
+
+---
+## HGAM - Only Individual Group Level Smooth
+
+```{r warning=FALSE}
+mI = gam(value_fin ~
+           s(doy, by = site_id_f, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+```{r echo=FALSE, fig.height=3.5}
+# summary(mI)
+dat[ , fI := fitted(mI) ]
+ggplot(dat, aes(x = doy, col = site_id)) +
+  geom_point(aes(y = value_fin), size = 0.9) +
+  geom_line(aes(y = fI), size = 1.5) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(1, 365, length.out = 12),
+                     labels = month.abb) +
+  labs(title = 'Chlortoluron (I)',
+       subtitle = paste0('AIC: ', round(AIC(mI)), '; Dev. expl.: ', round(summary(mI)$dev.expl,2)),
+       y = 'Concentration (ug/l)',
+       x = NULL)
+```
+
+---
+# Computational Issues
+
+- Factor smooth interactions need a lot of RAM and CPU
+
+
 
 ---
 class: center, middle
@@ -1082,6 +1473,8 @@ class: center, middle
   - <https://github.com/noamross/gam-resources>
 - Environmental computing
  - <http://environmentalcomputing.net/intro-to-gams>
+- Random effects and penalized splines are the same thing
+ - <https://www.tjmahr.com/random-effects-penalized-splines-same-thing>
 
 ---
 # Slides
@@ -1116,4 +1509,142 @@ Andreas Scharmüller
 [@andschar](https://twitter.com/andschar)
 
 <https://andschar.github.io>
+
+
+
+
+<!-- OLD MATERIAL -->
+
+<!-- --- -->
+<!-- # Mixed Models -->
+
+<!-- $$ -->
+<!-- Y = X \beta + Zb + \epsilon \\ -->
+<!-- b \sim Normal(0, \sigma_b) \\ -->
+<!-- \epsilon \sim Normal(0, \sigma_y) \\ -->
+<!-- X: \textrm{fixed effects model matrix} \\ -->
+<!-- Y: \textrm{mixed effects model matrix} \\ -->
+<!-- \sigma_b, \sigma_y: \textrm{variance components} \\ -->
+<!-- \sigma_b: \textrm{where the magic happens} -->
+<!-- $$ -->
+<!-- From: <https://www.tjmahr.com/random-effects-penalized-splines-same-thing> -->
+
+<!-- --- -->
+<!-- # Basis functions -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- gam(y ~ s(x1, k = 3), -->
+<!--     data = data) -->
+<!-- ``` -->
+
+<!-- ```{r echo=FALSE, fig.width=6, fig.height=3} -->
+<!-- oc1 = gam(SP ~ s(P, k = 3), -->
+<!--           data = oc, -->
+<!--           method = 'REML') -->
+<!-- oc2 = gam(SP ~ s(P, k = -1), -->
+<!--           data = oc, -->
+<!--           method = 'REML') -->
+<!-- oc$pr1 = predict(oc1, type = 'response') -->
+<!-- oc$pr2 = predict(oc2, type = 'response') -->
+
+<!-- ggplot(oc, aes(x = P)) + -->
+<!--   geom_point(aes(y = SP)) + -->
+<!--   geom_line(aes(y = pr1), col = 'blue') + -->
+<!--   labs(x = 'x', y = 'y') -->
+<!-- ``` -->
+
+<!-- --- -->
+<!-- # Basis functions -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- gam(y ~ s(x1), -->
+<!--     data = data) -->
+<!-- ``` -->
+
+<!-- ```{r echo=FALSE, fig.width=6, fig.height=3} -->
+<!-- oc1 = gam(SP ~ s(P, k = 3), -->
+<!--           data = oc, -->
+<!--           method = 'REML') -->
+<!-- oc2 = gam(SP ~ s(P, k = -1), -->
+<!--           data = oc, -->
+<!--           method = 'REML') -->
+<!-- oc$pr1 = predict(oc1, type = 'response') -->
+<!-- oc$pr2 = predict(oc2, type = 'response') -->
+
+<!-- ggplot(oc, aes(x = P)) + -->
+<!--   geom_point(aes(y = SP)) + -->
+<!--   geom_line(aes(y = pr1), col = 'blue') + -->
+<!--   geom_line(aes(y = pr2), col = 'red') + -->
+<!--   labs(x = 'x', y = 'y') -->
+<!-- ``` -->
+
+<!-- --- -->
+<!-- # Global Smoother -->
+
+<!-- - Single global smooth term for each variable -->
+<!-- - Level-individual __random effect intercepts__ (`bs = 're'`) -->
+<!-- - Mixed models (like in lme4, nlme) -->
+
+<!-- ```{r} -->
+<!-- spr_G = gam(logSize ~ s(days) + -->
+<!--                       s(plot, bs = 're'), -->
+<!--             data = Spruce, -->
+<!--             method = 'REML') -->
+<!-- Spruce$fit_G = fitted(spr_G) -->
+
+<!-- ggplot(Spruce) + -->
+<!--   geom_line(aes(y = fit_G, x = days, col = plot)) + -->
+<!--   labs(y = 'Fit') -->
+
+<!-- ``` -->
+
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5} -->
+<!-- plot(spr_G, pages = 1, main = NULL) -->
+<!-- ``` -->
+
+<!-- --- -->
+<!-- # Global Smoother + Group Level Smoother -->
+
+<!-- - Factor-smooth interaction (`bs = 'fs'`) -->
+<!-- - Single global smooth term for each variable -->
+<!-- - __Varying slopes__ -->
+<!-- - Same wiggliness (i.e. complexity) of smooths -->
+
+<!-- ```{r} -->
+<!-- spr_GS = gam(logSize ~ s(days, plot, bs = 'fs'), -->
+<!--              data = Spruce, -->
+<!--              method = 'REML') -->
+<!-- ``` -->
+
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5} -->
+<!-- plot(spr_GS, pages = 1, main = NULL) -->
+<!-- ``` -->
+
+<!-- --- -->
+<!-- # Global Smoother + Group Level Smoother -->
+
+<!-- - `s(x, by = fac)` and `s(fac, bs = 're')` -->
+<!-- - Similar to GS -->
+<!-- - Varying slopes -->
+<!-- - __Different wiggliness__ (i.e. complexity) of smooths -->
+
+<!-- ```{r} -->
+<!-- spr_GI = gam(logSize ~ s(days) + -->
+<!--                        s(days, by = plot) + -->
+<!--                        s(plot, bs = 're'), -->
+<!--             data = Spruce, -->
+<!--             method = 'REML') -->
+<!-- ``` -->
+
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5} -->
+<!-- plot(spr_GI, pages = 1) -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
 

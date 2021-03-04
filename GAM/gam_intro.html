@@ -6,7 +6,6 @@
     <meta name="author" content="Andreas Scharmüller" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <script src="libs/twitter-widget-0.0.1/widgets.js"></script>
   </head>
   <body>
     <textarea id="source">
@@ -16,7 +15,7 @@ class: center, middle, inverse, title-slide
 ## Generalized Additive Models (GAM)
 ### Andreas Scharmüller
 ### AG Landscape Ecology
-### 2020/11/09 (updated: 2020-12-17)
+### 2020-11-09 (updated: 2021-03-04)
 
 ---
 
@@ -86,8 +85,13 @@ __AIC:__ 531
 # Polynomial Regression
 
 - Extra predictors, obtained by raising the original predictors to a power
+
 - Specific patterns, not very flexible
+  
+  - Global not Local
+
 - Might lead to poor residuals, predictions, extrapolations
+  
   - Especially at the boundaries
 
 
@@ -118,6 +122,10 @@ __AIC:__ 425
 
 ![](gam_intro_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
+---
+class: center, inverse, middle
+
+# Generalized Additive Models (GAMs)
 
 ---
 # Generalized Additive Models (GAM)
@@ -141,11 +149,6 @@ __AIC:__ 425
 ![](gam_intro_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 
 ---
-class: center, inverse, middle
-
-# Generalized Additive Models (GAMs)
-
----
 # Generalized Additive Models (GAMs)
 
 &lt;br&gt;&lt;br&gt;&lt;br&gt;
@@ -154,72 +157,141 @@ class: center, inverse, middle
 
 
 .footnote[
-https://noamross.github.io/gams-in-r-course
+&lt;https://noamross.github.io/gams-in-r-course&gt;
 ]
 
 ---
 # Generalized Additive Models (GAMs)
 
+&lt;!-- NOTE doesn't work anymore --&gt;
+&lt;!-- tweetrmd::include_tweet("https://twitter.com/ucfagls/status/842444686513991680") --&gt;
+
+&lt;blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"&gt;&lt;p lang="en" dir="ltr"&gt;140 char vrsn&lt;br&gt;&lt;br&gt;1 GAMs are just GLMs&lt;br&gt;2 GAMs fit wiggly terms&lt;br&gt;3 use + s(foo) not foo in frmla&lt;br&gt;4 use method = "REML"&lt;br&gt;5 gam.check()&lt;/p&gt;&amp;mdash; Dr Gavin Simpson 😷🇪🇺 (@ucfagls) &lt;a href="https://twitter.com/ucfagls/status/842444686513991680?ref_src=twsrc%5Etfw"&gt;March 16, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+.footnote[
 &lt;https://www.fromthebottomoftheheap.net&gt;
-
-<blockquote class="twitter-tweet" data-width="550" data-lang="en" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">140 char vrsn<br><br>1 GAMs are just GLMs<br>2 GAMs fit wiggly terms<br>3 use + s(foo) not foo in frmla<br>4 use method = &quot;REML&quot;<br>5 gam.check()</p>&mdash; Dr Gavin Simpson 😷🇪🇺 (@ucfagls) <a href="https://twitter.com/ucfagls/status/842444686513991680?ref_src=twsrc%5Etfw">March 16, 2017</a></blockquote>
-
+]
 
 ---
 # Generalized Additive Models (GAMs)
 
-- GLM + Smooth function
-
-`$$y_i = \beta_0 + \beta_1f_1(x_{1i}) + \beta_2f_2(x_{2i}) + \beta_3f_3(x_{3i},x_{4i}) + \epsilon_i$$`
+`$$y_i = \beta_0 + f_1(x_{1i}) + f_2(x_{2i}) + f_3(x_{3i},x_{4i}) + ... + \epsilon_i, \epsilon \sim N(0,\sigma^2)$$`
 
 `$$\mathbb{E}(Y) = g^{-1} \bigg( \beta_0+ \sum_{j=1}^Jf_j(x_j)\bigg)$$`
 `$$f_j(x_j) = \sum_{k=1}^K \beta_{j,k} b_{j,k} (x_j)$$`
-- `\(K\)` Basis functions `\(b_{j,k}\)`
-  - Represent the smoother `\(f()\)`
 
-- Coefficients `\(\beta_{j,k}\)`
+- Smoothing function: `\(f()\)`
 
-- Smoothing penalty
+    - Splines
+    
+    - Konts: `\(K\)`
 
----
-# Basis functions
+- `\(K\)` Basis functions: `\(b_{j,k}\)`
 
-__IDEA:__ Family of functions or transformations that can be applied to `\(x\)`
+- `\(K\)` Coefficients: `\(\beta_{j,k}\)`
 
-`$$y_i = \beta_0 + \beta_1f_1(x_i) + \beta_2f_2(x_i) + \beta_3f_3(x_i)+...+\beta_Kf_K(x_i) + \epsilon_i$$`
-
-- Polynomial basis function:
-`$$f_j(x_i) = x_i^j$$`
-- Piecewise constant basis function:
-
-`$$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$`
-#### Advantage
-
-- Flexible fitting
-- Least Squares to fit unknown regression coefficients
-    - Standard errors
-    - F-statistics
+- Smoothing parameter
 
 ---
-# Basis functions
+class: center, inverse, middle
+# Splines
 
-- Knots
+&lt;img src="https://s3files.core77.com/blog/images/513221_81_55368_4VoVB83F4.jpg" width="50%"&gt;
 
-- Isotropic Smoothing
-
-  - Thin Plate Splines
-
-  - Cubic Regression Splines
-  
-- Tensor Product Smooth Interactions
+.footnote[
+https://www.core77.com/posts/55368/When-Splines-Were-Physical-Objects
+]
 
 ---
-# Basis functions
+# Splines
 
-![](gam_intro_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+- Splines replace a predictor variable, with a set of synthetic predictor variables.
+
+- Family of functions or transformations that can be applied to `\(x\)`
+
+    - Polynomial basis function
+    
+    `$$f_j(x_i) = x_i^j$$`
+
+    - Piecewise constant basis function:
+
+    `$$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$`
+- Penalized splines reduce wiggliness
+
+.footnote[
+https://www.youtube.com/watch?v=ENxTrFf9a7c&amp;t=2226
+
+https://www.tjmahr.com/random-effects-penalized-splines-same-thing/
+]
 
 ---
-# Complexity
+# Splines
+
+### Example: Airquality
+
+
+```r
+# data
+airqu = na.omit(airquality)
+head(airqu)
+```
+
+```
+##   Ozone Solar.R Wind Temp Month Day
+## 1    41     190  7.4   67     5   1
+## 2    36     118  8.0   72     5   2
+## 3    12     149 12.6   74     5   3
+## 4    18     313 11.5   62     5   4
+## 7    23     299  8.6   65     5   7
+## 8    19      99 13.8   59     5   8
+```
+
+
+```r
+# model
+air1 = gam(Ozone ~ s(Wind, bs = 'cr', k = 7), # Cubic Regr. Spline
+           data = airqu,
+           method = 'REML')
+```
+
+
+
+---
+# Splines
+
+### Example: Airquality
+
+![](gam_intro_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+---
+# Splines
+
+
+```r
+predict(air1, type = 'lpmatrix')
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+# Splines
+
+
+```r
+predict(air1, type = 'lpmatrix') %*% diag(coef(air1))
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+---
+# Splines
+
+![](gam_intro_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+---
+# Splines
+
+### Complexity
 
 
 ```r
@@ -246,64 +318,105 @@ coef(gam1)
 ```
 
 ---
-# Basis Functions
+# Splines
 
 
 ```r
-gam(y ~ s(x1, k = 3),
-    data = data)
+air2 = gam(Ozone ~ s(Wind, bs = 'cr', k = 3), # Cubic Regr. Spline
+           data = airqu,
+           method = 'REML')
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
 
 ---
-# Basis Functions
-
-
-```r
-gam(y ~ s(x1),
-    data = data)
-```
-
-![](gam_intro_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
-
----
-# Basis Functions
+# Splines - Knots
 
 Check for k:
 
 
 ```r
-gam.check(oc1)
+gam.check(air2)
 ```
 
 
 ```r
-k.check(oc1)
+k.check(air1) # k = 7
 ```
 
 ```
-##      k'      edf  k-index p-value
-## s(P)  2 1.972523 0.419655       0
+##         k'      edf   k-index p-value
+## s(Wind)  6 3.427874 0.8576004  0.0525
+```
+
+
+```r
+k.check(air2) # k = 3
+```
+
+```
+##         k'      edf   k-index p-value
+## s(Wind)  2 1.966923 0.8369715  0.0225
 ```
 
 --
 If p-value is low, k might be too small
 
 ---
+# Overfitting?
+
+### Large basis size (knots) lead to overfitting?
+
+
+```r
+air3 = gam(Ozone ~ s(Wind, bs = 'cr',
+                     k = length(unique(airqu$Wind))), # 29
+           data = airqu,
+           method = 'REML')
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+---
+# Overfitting?
+
+### SOLUTION:
+
+Penalize departure from smoothness:
+
+
+`$$P(f) = \int f''(x)^2 dx = \beta^T\mathbf{S}\beta$$`
+
+.footnote[
+&lt;https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf&gt;
+]
+
+---
 # Smoothing
 
-`$$Fit = Likelihood - \lambda \times Wiggliness$$`&lt;sup&gt;1&lt;/sup&gt;
+`$$Fit = Likelihood - \lambda \times Wiggliness$$`
 
-`$$\sum_{i=1}^n (y_i - g(x_i))^2 + \lambda \int g''(t)^2dt$$`
+&lt;!-- OLD formula --&gt;
+&lt;!-- `$$\sum_{i=1}^n (y_i - g(x_i))^2 + \lambda \int g''(t)^2dt$$` --&gt;
+
+
+`$$\hat{\beta} = \operatorname{arg min}_\beta \|y-X\beta\|^2 + \lambda\beta^TS\beta$$`
+
 
 - Likelihood: How well a GAM captures patterns in the data
+
 - Wiggliness: Complexity of a smooth
+
+  - Penalty matrix: `\(S\)`
+
 - Smoothing parameter `\(\lambda\)` is optimized in `gam()` 
+  
   - Controls the trade-off between Likelihood and Wiggliness
 
 .footnote[
-[1] &lt;https://noamross.github.io/gams-in-r-course&gt;
+&lt;https://noamross.github.io/gams-in-r-course&gt;
+
+&lt;https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf&gt;
 ]
 
 ---
@@ -343,7 +456,7 @@ ML...Maximum Likelihood
 
 
 
-![](gam_intro_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
 
 - A: `sp = 0`
 - B: `sp = 1e5`
@@ -352,6 +465,10 @@ ML...Maximum Likelihood
 --
 
 __The R-package does that for you!__
+
+.footnote[
+Smoothness selection alogrithms: &lt;https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/smoothness.pdf&gt;
+]
 
 ---
 class: center, inverse, middle
@@ -470,15 +587,43 @@ gam(y ~ te(x1, x2, k = c(4,8))) # interaction on different scales
 ```
 
 ---
-class: center, inverse, middle
 # Splines
 
----
-# Splines
+- Thin Plate Regression Splines (TPRS)
 
-__Thin Plate__ regression spline
+    - Default
+    
+    - Computationally more demanding (CRS)
 
-- Default
+- Cubic Regression Splines (CRS)
+
+    - Computationally less demanding
+    
+    - Cyclic Cubic Regression Splines
+
+- Random Effects
+
+- Different penalty matrices: `\(S\)`
+
+
+.footnote[
+&lt;https://stats.stackexchange.com/questions/305338/adaptive-gam-smooths-in-mgcv&gt;
+]
+
+&lt;!-- --- --&gt;
+&lt;!-- # Splines --&gt;
+
+&lt;!-- __Thin Plate__ Regression Splines --&gt;
+
+&lt;!-- - Any number of dimensions --&gt;
+
+&lt;!-- - Smoothing is the same (isotropy, rotational invariance) --&gt;
+
+&lt;!-- - Second-order: --&gt;
+
+&lt;!--     - Penalty is porportionate to the integral of the squared second derivative --&gt;
+
+&lt;!--     - `\(m=1\)`: Penalizing squared first derivatives. --&gt;
 
 
 ```r
@@ -519,7 +664,6 @@ gam(y ~ s(x, y, bs = 'so', xt = list(bnd = boundary_polygon)),
   &lt;caption&gt;https://fromthebottomoftheheap.net/2016/03/27/soap-film-smoothers&lt;/caption&gt;
 &lt;/figure&gt;
 
-
 ---
 class: center, inverse, middle
 # Random Effects
@@ -551,6 +695,19 @@ gamm(y ~ s(x),
      random = list(fac = ~1))
 ```
 
+---
+# Random Effects
+
+"Random effects and penalized splines are the same thing."
+
+&lt;!-- tweetrmd::include_tweet("https://twitter.com/ericJpedersen/status/1293508069016637440") --&gt;
+
+![](https://pbs.twimg.com/media/EfN2u76XgAEzBC4?format=jpg&amp;name=small)&lt;!-- --&gt;
+
+.footnote[
+&lt;https://twitter.com/ericJpedersen/status/1293508069016637440&gt;
+&lt;https://www.tjmahr.com/random-effects-penalized-splines-same-thing&gt;
+]
 
 ---
 class: center, inverse, middle
@@ -583,7 +740,7 @@ head(mack, n = 3)
   - Sea bed depth at sampling location: `b.depth`
   - Water salinity: `salinity` 
   
-.foot-note[
+.footnote[
 &lt;https://cran.r-project.org/web/packages/gamair/gamair.pdf&gt;
 ]
 
@@ -594,7 +751,7 @@ head(mack, n = 3)
 ```r
 mod = gam(egg.count ~ s(b.depth) + s(salinity),
           data = mack,
-          family = 'poisson')
+          family = 'nb')
 ```
 
 ---
@@ -631,7 +788,7 @@ k.check(mod)
 
 ```
 ## 
-## Family: poisson 
+## Family: Negative Binomial(0.455) 
 ## Link function: log 
 ## 
 ## Formula:
@@ -639,19 +796,19 @@ k.check(mod)
 ## 
 ## Parametric coefficients:
 ##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  2.04484    0.04032   50.72   &lt;2e-16 ***
+## (Intercept)  2.03383    0.08967   22.68   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## Approximate significance of smooth terms:
 ##               edf Ref.df Chi.sq p-value    
-## s(b.depth)  8.946  8.999   1718  &lt;2e-16 ***
-## s(salinity) 8.902  8.995   1191  &lt;2e-16 ***
+## s(b.depth)  7.045  8.076  99.21  &lt;2e-16 ***
+## s(salinity) 6.672  7.740  90.90  &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## R-sq.(adj) =  0.325   Deviance explained = 46.4%
-## UBRE = 14.812  Scale est. = 1         n = 330
+## R-sq.(adj) =  0.151   Deviance explained = 37.4%
+## -REML = 1047.9  Scale est. = 1         n = 330
 ```
 
 ---
@@ -685,60 +842,32 @@ new[ , `:=`
 ```r
 ggplot(new, aes(y = fit, x = salinity)) +
   geom_line() +
+  geom_point(data = mack, aes(y = egg.count)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
-
----
-# Model summary
-
-
-```
-## 
-## Family: poisson 
-## Link function: log 
-## 
-## Formula:
-## egg.count ~ s(b.depth) + s(salinity)
-## 
-## Parametric coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)  2.04484    0.04032   50.72   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Approximate significance of smooth terms:
-##               edf Ref.df Chi.sq p-value    
-## s(b.depth)  8.946  8.999   1718  &lt;2e-16 ***
-## s(salinity) 8.902  8.995   1191  &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## R-sq.(adj) =  0.325   Deviance explained = 46.4%
-## UBRE = 14.812  Scale est. = 1         n = 330
-```
+![](gam_intro_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
 
 ---
 # Model checking
 
-![](gam_intro_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
 
 ```
 ## 
-## Method: UBRE   Optimizer: outer newton
-## full convergence after 8 iterations.
-## Gradient range [2.210523e-05,3.203484e-05]
-## (score 14.8117 &amp; scale 1).
-## Hessian positive definite, eigenvalue range [0.0003541469,0.0005365621].
+## Method: REML   Optimizer: outer newton
+## full convergence after 6 iterations.
+## Gradient range [-1.05935e-06,1.198944e-06]
+## (score 1047.905 &amp; scale 1).
+## Hessian positive definite, eigenvalue range [0.6362334,106.8741].
 ## Model rank =  19 / 19 
 ## 
 ## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 ## indicate that k is too low, especially if edf is close to k'.
 ## 
 ##               k'  edf k-index p-value    
-## s(b.depth)  9.00 8.95    0.95    0.52    
-## s(salinity) 9.00 8.90    0.69  &lt;2e-16 ***
+## s(b.depth)  9.00 7.04    0.78    0.18    
+## s(salinity) 9.00 6.67    0.60  &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
@@ -763,7 +892,7 @@ gam.check() - plots
 
 ---
 # Model checking
-![](gam_intro_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
 
 ```
 ## 
@@ -778,7 +907,7 @@ gam.check() - plots
 ## indicate that k is too low, especially if edf is close to k'.
 ## 
 ##           k'  edf k-index p-value
-## s(hp)   9.00 1.36    0.95    0.32
+## s(hp)   9.00 1.36    0.95    0.37
 ## s(disp) 9.00 4.67    1.37    0.95
 ```
 
@@ -793,8 +922,8 @@ gam.check() - plots
 - Double penalty approach
   - `select = TRUE`
   - Adds second penalty to all terms
-    - Similar to ridge regression, lasso
-    - Disadvantage: Each term requires two smoothness parameters to be estimates
+    - Penalizes the NULL space
+    - "Shrinkage", similar to Ridge Regression, Lasso
 
 
 ```r
@@ -812,9 +941,18 @@ Marra &amp; Wood (2011)
 # Model selection
 
 - AIC
+
 - Expert judgement
+
 - Computational time
-- Inferential goals of the study
+
+- __Inferential goals of the study__
+
+
+.footnote[
+&lt;https://stats.stackexchange.com/questions/274151/anova-to-compare-models&gt;
+]
+
 
 ---
 class: center, middle
@@ -824,10 +962,10 @@ class: center, middle
 
 ---
 class: center, inverse, middle
-# Visualisation
+# Visualization
 
 ---
-# Visualisation
+# Visualization
 
 
 ```r
@@ -838,7 +976,7 @@ ir1 = gam(Sepal.Length ~ s(Petal.Length),
 ```
 
 ---
-# Visualisation
+# Visualization
 
 Partial effect plots
 
@@ -849,7 +987,7 @@ require(mgcv)
 plot(ir1, pages = 1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-46-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -859,11 +997,11 @@ require(gratia)
 draw(ir1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
 ]
 
 ---
-# Visualisation
+# Visualization
 
 Multiple covariates
 
@@ -876,7 +1014,7 @@ mt1 = gam(mpg ~ s(disp) + s(hp),
 ```
 
 ---
-# Visualisation
+# Visualization
 
 
 ```r
@@ -888,7 +1026,7 @@ vis.gam(mt1, # GAM object
         r = 10) # zoom
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
 
 ???
 yellow: larger predictions&lt;br&gt;
@@ -898,7 +1036,7 @@ disp: displacement (German: Hubraum)&lt;br&gt;
 hp: horsepower&lt;br&gt;
 
 ---
-# Visualisation
+# Visualization
 
 
 ```r
@@ -907,7 +1045,7 @@ vis.gam(mt1, # GAM object
         plot.type = "contour") # contour plot or heatmap
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
 
 ---
 class: center, inverse, middle
@@ -931,7 +1069,7 @@ class: center, inverse, middle
 # Hierarchical GAMs
 
 &lt;figure&gt;
-  &lt;img src="data/hgam_concept.png"&gt;
+  &lt;img src="data/hgam_concept.png" width="80%"&gt;
   &lt;caption&gt;Pedersen et al. (2019)&lt;/caption&gt;
 &lt;/figure&gt;
 
@@ -940,57 +1078,210 @@ class: center, inverse, middle
 - Ignoring inherent grouping would miss individual optima
 
 ---
-# Global Smoother
+# Hierarchical GAMs
+
+- Should there be a common smoother or a smoother for each group?
+
+- Do all group-specific smoothers have the __same wiggliness__ or
+should each group wiggly independently (own smoothing parameter)?
+
+- Will the smoothers for each group have a __similar shape__?
+
+---
+# Hierarchical GAMs
+
+&lt;figure&gt;
+  &lt;img src="data/hgam_possibilities.png" width="60%"&gt;
+  &lt;caption&gt;Pedersen et al. (2019)&lt;/caption&gt;
+&lt;/figure&gt;
+
+---
+## Hierarchical GAM (HGAM)
+
+### Chlortoluron
+
+
+
+
+```r
+dat[ , head(.SD, 2), site_id]
+```
+
+```
+##          site_id value_fin       date         name doy     site_id_f
+## 1: RP_2619521200     0.110 2011-11-28 Chlortoluron 332 RP_2619521200
+## 2: RP_2619521200     0.310 2011-12-12 Chlortoluron 346 RP_2619521200
+## 3: RP_2649525000     0.052 2010-02-22 Chlortoluron  53 RP_2649525000
+## 4: RP_2649525000     0.140 2010-02-08 Chlortoluron  39 RP_2649525000
+## 5:   SN_OBF00200     0.068 2001-01-31 Chlortoluron  31   SN_OBF00200
+## 6:   SN_OBF00200     0.053 2001-03-01 Chlortoluron  60   SN_OBF00200
+## 7:   SN_OBA02810     0.022 2010-04-25 Chlortoluron 115   SN_OBA02810
+## 8:   SN_OBA02810     0.012 2010-04-07 Chlortoluron  97   SN_OBA02810
+```
+
+---
+## Hierarchical GAM (HGAM)
+
+### Chlortoluron
+
+![](gam_intro_files/figure-html/unnamed-chunk-61-1.png)&lt;!-- --&gt;
+
+---
+## No HGAM
+
+
+```r
+m0 = gam(value_fin ~ s(doy, bs = 'cc', k = 12),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-63-1.png)&lt;!-- --&gt;
+
+---
+## HGAM - Global Smooth
+
+
+```r
+mG = gam(value_fin ~
+           s(doy, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
 
 - Single global smooth term for each variable
+
 - Level-individual __random effect intercepts__ (`bs = 're'`)
+
 - Mixed models (like in lme4, nlme)
 
+---
+## HGAM - Global Smooth
+
 
 ```r
-spr_G = gam(logSize ~ s(days) +
-                      s(plot, bs = 're'),
-            data = Spruce,
-            method = 'REML')
+mG = gam(value_fin ~
+           s(doy, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-66-1.png)&lt;!-- --&gt;
 
 ---
-# Global Smoother + Group Level Smoother
+## HGAM - Global + Shared Group Level Smooth
+
+
+```r
+mGS = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+            s(site_id_f, bs = 're'), # not explicitly needed
+          data = dat,
+          family = Gamma(link = 'log'))
+```
 
 - Factor-smooth interaction (`bs = 'fs'`)
+
 - Single global smooth term for each variable
-- __Varying slopes__
-- Same wiggliness (i.e. complexity) of smooths
 
+- Varying slopes
 
-```r
-spr_GS = gam(logSize ~ s(days, plot, bs = 'fs'),
-             data = Spruce,
-             method = 'REML')
-```
+- Copy of each set of basis functions, 
 
-![](gam_intro_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+- Penalizing functions too far away from the average
+
+- __Similar wiggliness__, one smoothing parameter
 
 ---
-# Global Smoother + Group Level Smoother
-
-- `s(x, by = fac)` and `s(fac, bs = 're')`
-- Similar to GS
-- Varying slopes
-- __Different wiggliness__ (i.e. complexity) of smooths
+## HGAM - Global + Shared Group Level Smooth
 
 
 ```r
-spr_GI = gam(logSize ~ s(days) +
-                       s(days, by = plot) +
-                       s(plot, bs = 're'),
-            data = Spruce,
-            method = 'REML')
+mGS = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+            s(site_id_f, bs = 're'), # not explicitly needed
+          data = dat,
+          family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
+
+---
+## HGAM - Global + Individual Group Level Smooth
+
+
+```r
+mGI = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, by = site_id_f, bs = 'cc', k = 12) +
+            s(site_id_f, bs = 're'),
+          data = dat,
+          family = Gamma(link = 'log'))
+```
+
+- `s(x, by = fac)` and `s(fac, bs = 're')`
+
+- Similar to GS
+
+- Varying slopes
+
+- __Different wiggliness__, multiple smoothing parameters
+
+- Useful: Different wiggliness expected
+
+---
+## HGAM - Global + Individual Group Level Smooth
+
+
+```r
+mGI = gam(value_fin ~
+            s(doy, bs = 'cc', k = 12) +
+            s(doy, by = site_id_f, bs = 'cc', k = 12) +
+            s(site_id_f, bs = 're'),
+          data = dat,
+          family = Gamma(link = 'log'))
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
+
+---
+## HGAM - Only Shared Group Level Smooth
+
+
+```r
+mS = gam(value_fin ~
+           s(doy, site_id_f, bs = 'fs', k = 12, xt=list(bs='cc')) +
+           s(site_id_f, bs = 're'), # not explicitly needed
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+
+---
+## HGAM - Only Individual Group Level Smooth
+
+
+```r
+mI = gam(value_fin ~
+           s(doy, by = site_id_f, bs = 'cc', k = 12) +
+           s(site_id_f, bs = 're'),
+         data = dat,
+         family = Gamma(link = 'log'))
+```
+
+![](gam_intro_files/figure-html/unnamed-chunk-76-1.png)&lt;!-- --&gt;
+
+---
+# Computational Issues
+
+- Factor smooth interactions need a lot of RAM and CPU
+
+
 
 ---
 class: center, middle
@@ -1015,6 +1306,8 @@ class: center, middle
   - &lt;https://github.com/noamross/gam-resources&gt;
 - Environmental computing
  - &lt;http://environmentalcomputing.net/intro-to-gams&gt;
+- Random effects and penalized splines are the same thing
+ - &lt;https://www.tjmahr.com/random-effects-penalized-splines-same-thing&gt;
 
 ---
 # Slides
@@ -1049,6 +1342,136 @@ Andreas Scharmüller
 [@andschar](https://twitter.com/andschar)
 
 &lt;https://andschar.github.io&gt;
+
+
+
+
+&lt;!-- OLD MATERIAL --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Mixed Models --&gt;
+
+&lt;!-- $$ --&gt;
+&lt;!-- Y = X \beta + Zb + \epsilon \\ --&gt;
+&lt;!-- b \sim Normal(0, \sigma_b) \\ --&gt;
+&lt;!-- \epsilon \sim Normal(0, \sigma_y) \\ --&gt;
+&lt;!-- X: \textrm{fixed effects model matrix} \\ --&gt;
+&lt;!-- Y: \textrm{mixed effects model matrix} \\ --&gt;
+&lt;!-- \sigma_b, \sigma_y: \textrm{variance components} \\ --&gt;
+&lt;!-- \sigma_b: \textrm{where the magic happens} --&gt;
+&lt;!-- $$ --&gt;
+&lt;!-- From: &lt;https://www.tjmahr.com/random-effects-penalized-splines-same-thing&gt; --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Basis functions --&gt;
+
+&lt;!-- ```{r eval=FALSE} --&gt;
+&lt;!-- gam(y ~ s(x1, k = 3), --&gt;
+&lt;!--     data = data) --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- ```{r echo=FALSE, fig.width=6, fig.height=3} --&gt;
+&lt;!-- oc1 = gam(SP ~ s(P, k = 3), --&gt;
+&lt;!--           data = oc, --&gt;
+&lt;!--           method = 'REML') --&gt;
+&lt;!-- oc2 = gam(SP ~ s(P, k = -1), --&gt;
+&lt;!--           data = oc, --&gt;
+&lt;!--           method = 'REML') --&gt;
+&lt;!-- oc$pr1 = predict(oc1, type = 'response') --&gt;
+&lt;!-- oc$pr2 = predict(oc2, type = 'response') --&gt;
+
+&lt;!-- ggplot(oc, aes(x = P)) + --&gt;
+&lt;!--   geom_point(aes(y = SP)) + --&gt;
+&lt;!--   geom_line(aes(y = pr1), col = 'blue') + --&gt;
+&lt;!--   labs(x = 'x', y = 'y') --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Basis functions --&gt;
+
+&lt;!-- ```{r eval=FALSE} --&gt;
+&lt;!-- gam(y ~ s(x1), --&gt;
+&lt;!--     data = data) --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- ```{r echo=FALSE, fig.width=6, fig.height=3} --&gt;
+&lt;!-- oc1 = gam(SP ~ s(P, k = 3), --&gt;
+&lt;!--           data = oc, --&gt;
+&lt;!--           method = 'REML') --&gt;
+&lt;!-- oc2 = gam(SP ~ s(P, k = -1), --&gt;
+&lt;!--           data = oc, --&gt;
+&lt;!--           method = 'REML') --&gt;
+&lt;!-- oc$pr1 = predict(oc1, type = 'response') --&gt;
+&lt;!-- oc$pr2 = predict(oc2, type = 'response') --&gt;
+
+&lt;!-- ggplot(oc, aes(x = P)) + --&gt;
+&lt;!--   geom_point(aes(y = SP)) + --&gt;
+&lt;!--   geom_line(aes(y = pr1), col = 'blue') + --&gt;
+&lt;!--   geom_line(aes(y = pr2), col = 'red') + --&gt;
+&lt;!--   labs(x = 'x', y = 'y') --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Global Smoother --&gt;
+
+&lt;!-- - Single global smooth term for each variable --&gt;
+&lt;!-- - Level-individual __random effect intercepts__ (`bs = 're'`) --&gt;
+&lt;!-- - Mixed models (like in lme4, nlme) --&gt;
+
+&lt;!-- ```{r} --&gt;
+&lt;!-- spr_G = gam(logSize ~ s(days) + --&gt;
+&lt;!--                       s(plot, bs = 're'), --&gt;
+&lt;!--             data = Spruce, --&gt;
+&lt;!--             method = 'REML') --&gt;
+&lt;!-- Spruce$fit_G = fitted(spr_G) --&gt;
+
+&lt;!-- ggplot(Spruce) + --&gt;
+&lt;!--   geom_line(aes(y = fit_G, x = days, col = plot)) + --&gt;
+&lt;!--   labs(y = 'Fit') --&gt;
+
+&lt;!-- ``` --&gt;
+
+&lt;!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5} --&gt;
+&lt;!-- plot(spr_G, pages = 1, main = NULL) --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Global Smoother + Group Level Smoother --&gt;
+
+&lt;!-- - Factor-smooth interaction (`bs = 'fs'`) --&gt;
+&lt;!-- - Single global smooth term for each variable --&gt;
+&lt;!-- - __Varying slopes__ --&gt;
+&lt;!-- - Same wiggliness (i.e. complexity) of smooths --&gt;
+
+&lt;!-- ```{r} --&gt;
+&lt;!-- spr_GS = gam(logSize ~ s(days, plot, bs = 'fs'), --&gt;
+&lt;!--              data = Spruce, --&gt;
+&lt;!--              method = 'REML') --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=2.5} --&gt;
+&lt;!-- plot(spr_GS, pages = 1, main = NULL) --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Global Smoother + Group Level Smoother --&gt;
+
+&lt;!-- - `s(x, by = fac)` and `s(fac, bs = 're')` --&gt;
+&lt;!-- - Similar to GS --&gt;
+&lt;!-- - Varying slopes --&gt;
+&lt;!-- - __Different wiggliness__ (i.e. complexity) of smooths --&gt;
+
+&lt;!-- ```{r} --&gt;
+&lt;!-- spr_GI = gam(logSize ~ s(days) + --&gt;
+&lt;!--                        s(days, by = plot) + --&gt;
+&lt;!--                        s(plot, bs = 're'), --&gt;
+&lt;!--             data = Spruce, --&gt;
+&lt;!--             method = 'REML') --&gt;
+&lt;!-- ``` --&gt;
+
+&lt;!-- ```{r, echo=FALSE, warning=FALSE, fig.width=5, fig.height=3.5} --&gt;
+&lt;!-- plot(spr_GI, pages = 1) --&gt;
+&lt;!-- ``` --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

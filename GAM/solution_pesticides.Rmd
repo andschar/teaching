@@ -16,11 +16,14 @@ require(mgcViz)
 
 # plot theme
 theme_set(theme_minimal())
+
+# prj dir
+prj = '/home/scharmueller/Projects/teaching/GAM'
 ```
 
 # Data
 ```{r}
-pest = readRDS('data/pesticides.rds')
+pest = readRDS(file.path(prj, 'data/pesticides.rds'))
 ```
 
 # Prepare
