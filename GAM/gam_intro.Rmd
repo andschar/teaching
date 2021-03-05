@@ -853,6 +853,7 @@ Discrete __random effects__
 
 - Classes (e.g. age, sex)
 - Sites, states, rivers, lakes
+- Mesocosm groups
 - No need to set k (equals number of levels)
   
 ```{r eval=FALSE}
@@ -861,15 +862,24 @@ gam(y ~ s(x) + s(fac, bs = 're'),
 ```
 
 ---
-# gamm()
+# gamm() & gamm4()
 
 - Calls `nlme::lme()`
 
 ```{r eval=FALSE}
-gamm(y ~ s(x),
-     data = data,
-     random = list(fac = ~1))
+mgcv::gamm(y ~ s(x),
+           data = data,
+           random = list(fac = ~1))
 ```
+
+- Calls `gamm4::gamm4()`
+
+```{r eval=FALSE}
+gamm4::gamm4(y ~ s(x),
+             data = data,
+             random = list(fac = ~ 1 | fac))
+```
+
 
 ---
 # Random Effects
@@ -884,6 +894,7 @@ knitr::include_graphics("https://pbs.twimg.com/media/EfN2u76XgAEzBC4?format=jpg&
 
 .footnote[
 <https://twitter.com/ericJpedersen/status/1293508069016637440>
+
 <https://www.tjmahr.com/random-effects-penalized-splines-same-thing>
 ]
 
@@ -1444,17 +1455,10 @@ ggplot(dat, aes(x = doy, col = site_id)) +
 ```
 
 ---
-# Computational Issues
-
-- Factor smooth interactions need a lot of RAM and CPU
-
-
-
----
 class: center, middle
 # Exercise 2
 
-## GAM/exercise_zooplankton.Rmd
+## GAM/exercise_co2uptake.Rmd
 
 ---
 # Tutorials, Blogs & Videos

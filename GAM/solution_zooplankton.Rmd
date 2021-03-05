@@ -42,7 +42,7 @@ density_scaled = zooplankton density scaled (to the area and volume of the net)
 
 - use density_adj as a response
   - Which distributional family would you pick?
-- use the variable day to model possible seasonl patterns
+- use the variable day to model possible seasonal patterns
   - which smoothing basis wold you use for seasonal data?
 - account for the different lakes in the model
   - as random effects

@@ -1,0 +1,22 @@
+---
+title: "Exercise: CO2 uptake"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Task
+
+CO 2 uptake in grasses under varying concentrations of CO2.
+Two Locations: Mississippi, Quebec (Variable: Type)
+
+## Task
+
+Model the CO2 uptake of plants between two different locations.
+
+## Data
+
+```{r}
+CO2$Plant_uo = factor(CO2$Plant, ordered = FALSE) # remove ordering factor
+head(CO2)
+```

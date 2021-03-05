@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 ## Generalized Additive Models (GAM)
 ### Andreas Scharmüller
 ### AG Landscape Ecology
-### 2020-11-09 (updated: 2021-03-04)
+### 2020-11-09 (updated: 2021-03-05)
 
 ---
 
@@ -675,6 +675,7 @@ Discrete __random effects__
 
 - Classes (e.g. age, sex)
 - Sites, states, rivers, lakes
+- Mesocosm groups
 - No need to set k (equals number of levels)
   
 
@@ -684,16 +685,26 @@ gam(y ~ s(x) + s(fac, bs = 're'),
 ```
 
 ---
-# gamm()
+# gamm() &amp; gamm4()
 
 - Calls `nlme::lme()`
 
 
 ```r
-gamm(y ~ s(x),
-     data = data,
-     random = list(fac = ~1))
+mgcv::gamm(y ~ s(x),
+           data = data,
+           random = list(fac = ~1))
 ```
+
+- Calls `gamm4::gamm4()`
+
+
+```r
+gamm4::gamm4(y ~ s(x),
+             data = data,
+             random = list(fac = ~ 1 | fac))
+```
+
 
 ---
 # Random Effects
@@ -706,6 +717,7 @@ gamm(y ~ s(x),
 
 .footnote[
 &lt;https://twitter.com/ericJpedersen/status/1293508069016637440&gt;
+
 &lt;https://www.tjmahr.com/random-effects-penalized-splines-same-thing&gt;
 ]
 
@@ -846,12 +858,12 @@ ggplot(new, aes(y = fit, x = salinity)) +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
 
 ---
 # Model checking
 
-![](gam_intro_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
 
 ```
 ## 
@@ -892,7 +904,7 @@ gam.check() - plots
 
 ---
 # Model checking
-![](gam_intro_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
 
 ```
 ## 
@@ -987,7 +999,7 @@ require(mgcv)
 plot(ir1, pages = 1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -997,7 +1009,7 @@ require(gratia)
 draw(ir1)
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -1026,7 +1038,7 @@ vis.gam(mt1, # GAM object
         r = 10) # zoom
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
 
 ???
 yellow: larger predictions&lt;br&gt;
@@ -1045,7 +1057,7 @@ vis.gam(mt1, # GAM object
         plot.type = "contour") # contour plot or heatmap
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-59-1.png)&lt;!-- --&gt;
 
 ---
 class: center, inverse, middle
@@ -1124,7 +1136,7 @@ dat[ , head(.SD, 2), site_id]
 
 ### Chlortoluron
 
-![](gam_intro_files/figure-html/unnamed-chunk-61-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
 
 ---
 ## No HGAM
@@ -1136,7 +1148,7 @@ m0 = gam(value_fin ~ s(doy, bs = 'cc', k = 12),
          family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-63-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-64-1.png)&lt;!-- --&gt;
 
 ---
 ## HGAM - Global Smooth
@@ -1168,7 +1180,7 @@ mG = gam(value_fin ~
          family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-66-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-67-1.png)&lt;!-- --&gt;
 
 ---
 ## HGAM - Global + Shared Group Level Smooth
@@ -1208,7 +1220,7 @@ mGS = gam(value_fin ~
           family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
 
 ---
 ## HGAM - Global + Individual Group Level Smooth
@@ -1246,7 +1258,7 @@ mGI = gam(value_fin ~
           family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-73-1.png)&lt;!-- --&gt;
 
 ---
 ## HGAM - Only Shared Group Level Smooth
@@ -1260,7 +1272,7 @@ mS = gam(value_fin ~
          family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+![](gam_intro_files/figure-html/unnamed-chunk-75-1.png)&lt;!-- --&gt;
 
 ---
 ## HGAM - Only Individual Group Level Smooth
@@ -1274,20 +1286,13 @@ mI = gam(value_fin ~
          family = Gamma(link = 'log'))
 ```
 
-![](gam_intro_files/figure-html/unnamed-chunk-76-1.png)&lt;!-- --&gt;
-
----
-# Computational Issues
-
-- Factor smooth interactions need a lot of RAM and CPU
-
-
+![](gam_intro_files/figure-html/unnamed-chunk-77-1.png)&lt;!-- --&gt;
 
 ---
 class: center, middle
 # Exercise 2
 
-## GAM/exercise_zooplankton.Rmd
+## GAM/exercise_co2uptake.Rmd
 
 ---
 # Tutorials, Blogs &amp; Videos
