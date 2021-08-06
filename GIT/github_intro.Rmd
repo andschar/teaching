@@ -1,0 +1,280 @@
+---
+title: "Introduction to Git & GitHub"
+subtitle: "Terminal, RStudio"
+author: "Andreas Scharmüller, Prof. Ralf B. Schäfer"
+institute: "AG Landscape Ecology"
+date: "2020/10/29 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+## Why Git?
+
+.pull-left[
+
+- Version control software
+- Modern software development
+  - most R-packages
+- Git is the __software__
+- GitHub is the __platform__
+]
+
+.pull-right[
+
+<img src="figures/git_hub.jpeg" style="background-image">
+]
+
+#### Other Plattforms
+- GitLab: <https://about.gitlab.com>
+- BitBucket: <https://bitbucket.org>
+
+---
+## Install Git
+
+<https://github.com/git-guides/install-git>
+
+#### On Linux
+
+```sh
+sudo apt update
+sudo apt install git-all
+```
+
+#### On windows
+
+Download manually
+
+## Start Git
+
+```sh
+cd my_directory
+git init
+```
+
+---
+## Create a GitHub account
+
+<img src="figures/github_account.png" style="width: 70%">
+
+---
+## Create (initialize) repository
+
+#### Locally
+
+```sh
+git init
+```
+
+#### Remote
+
+<img src="figures/github0_repo.png" style="width: 80%">
+
+---
+## Create (initialize) repository
+
+<img src="figures/github0_repo2.png" style="width: 70%">
+
+
+---
+## Fork a repository
+
+- Fork someone's repo to your GitHub account
+
+![github1](figures/github1_fork.png)
+
+---
+## Clone a repository
+
+- Clone __your__ fork (i.e. version) to your local machine
+
+![github2](figures/github2_clone.png)
+---
+## Clone a repository
+
+#### Command line
+
+```sh
+cd Projects
+git clone git@github.com:njuvigny/MOD3.git # SSH
+git clone https://github.com/njuvigny/MOD3.git # HTTPS
+```
+
+#### RStudio
+
+<img src="figures/github3_clone2.png" style="width:50%;">
+
+---
+## RStudio
+
+![github3](figures/github3_clone.png)
+
+---
+## RStudio
+
+![github3](figures/github3_clone3.png)
+
+---
+class: center, inverse, middle
+## First repository!!
+
+<img src="figures/git_repo_hooray.jpg" style="width:40%">
+
+
+---
+class: inverse, center, middle
+## Local changes
+
+Make changes to the `.txt`, `.R`, `.python` or to whatever file...
+
+<img src="figures/github4_local_cahnges.gif" style="width:60%;">
+
+---
+## Stage your changes
+
+```sh
+git add file.txt
+git add *.txt
+git add -A
+```
+![github5](figures/github5_stage_changes.png)
+---
+## Commit changes
+
+```sh
+git commit -m 'Patch-1'
+```
+
+![github6](figures/github6_commit_changes.png)
+---
+## Push to your repo (origin)
+
+```sh
+git push origin master
+git push origin main
+```
+
+![github7](figures/github7_push.png)
+---
+## Pull Request
+
+#### From your main branch to the remote main branch
+
+![github9](figures/github9_pr_master.png)
+
+---
+## Git/Github Workflow
+
+1. Create or Fork a repo
+
+2. Clone the repo to local machine
+
+3. Local changes
+
+4. Stage (i.e. add) & Comit changes to Git tree
+
+5. Push to origin
+
+6. Create a Pull-Request against the remote repository
+
+
+---
+class: center, inverse, middle
+# Branches
+
+<img src="figures/git_branch.jpg" style="width:40%;">
+
+
+---
+## Branch
+
+#### Create/Switch Branch
+
+```sh
+git checkout -b dev_scharmueller
+git checkout main
+git status
+git branch
+```
+
+![github8](figures/github8_branch.png)
+
+---
+## Branch
+
+#### Merge Branch
+
+```sh
+git checkout master
+git merge dev_scharmueller
+```
+
+---
+## Branch
+
+#### Merge example
+
+First 8 commits of my R-package repo: __andschar/dbreport__
+
+```sh
+git log --all --decorate --oneline --graph
+```
+
+<img src="figures/github9_adog.png" style="width:100%;">
+
+
+---
+## Branch
+
+#### Pull Request
+
+From your dev_XXX branch to a new remote dev_XXX branch
+
+![github9](figures/github9_pr_dev.png)
+---
+class: center, inverse, middle
+
+<img src="figures/git_simply.jpeg">
+
+---
+## Material
+
+- OpenOlat
+- StackOverflow
+- YouTube
+- <https://guides.github.com/activities/hello-world>
+- <https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN>
+- <https://ohshitgit.com>
+
+### Made with
+- <https://github.com/rstudio/rmarkdown>
+- <https://github.com/yihui/knitr>
+- <https://github.com/yihui/xaringan>
+
+---
+## Task
+
+- Fork Noel's repo: <https://github.com/njuvigny/MOD3>
+- Clone it to local machine
+- Create a new branch named dev_YOURSURNAME
+- Change the file __git_intro/task.Rmd__ according to the steps described in said file
+- Create a .html out of the .Rmd file
+- Add & Commit both files in the new branch
+- Push local changes to your repo (HINT: this might cause some trouble ;))
+- Create a Pull Request against Noel's repo
+
+
+---
+class: center, middle, inverse
+
+# Thank you for your attention!
