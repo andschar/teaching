@@ -1,0 +1,17 @@
+---
+title: "Teaching Material"
+---
+
+## Generalized Additive Models (GAM)
+
+tba
+
+## GIT
+
+- [Introduction to Git & GitHub](GIT/Git.html)
+
+## PostgreSQL and PostGIS
+
+tba
+
+
