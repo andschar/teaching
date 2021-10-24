@@ -350,11 +350,11 @@ knitr::include_graphics("figures/boromir-git.jpeg")
 
 ---
 layout: false
-# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT)
+# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT.html)
 
 ## Thank you for your attention!
 
-### Slides: <https://andschar.github.io/teaching/GIT>
+### Slides: <andschar.github.io/teaching/GIT.html>
 
 __Andreas Scharmüller__<br>
 
