@@ -3,7 +3,8 @@
   <head>
     <title>Introduction to Git &amp; GitHub</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Andreas Scharmüller, Prof. Ralf B. Schäfer" />
+    <meta name="author" content="Andreas Scharmüller" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
   </head>
@@ -13,9 +14,9 @@ class: center, middle, inverse, title-slide
 
 # Introduction to Git &amp; GitHub
 ## Terminal, RStudio
-### Andreas Scharmüller, Prof. Ralf B. Schäfer
+### Andreas Scharmüller
 ### AG Landscape Ecology
-### 2020/10/29 (updated: 2020-11-14)
+### 2021-10-25 (updated: 2021-10-24)
 
 ---
 
@@ -47,7 +48,7 @@ class: center, middle, inverse, title-slide
 
 &lt;https://github.com/git-guides/install-git&gt;
 
-#### On Linux
+#### On Linux Ubuntu
 
 ```sh
 sudo apt update
@@ -58,17 +59,17 @@ sudo apt install git-all
 
 Download manually
 
-## Start Git
+## Setup Local Git __Repository__
 
 ```sh
-cd my_directory
+cd my_root_directory
 git init
 ```
 
 ---
 ## Create a GitHub account
 
-&lt;img src="figures/github_account.png" style="width: 70%"&gt;
+&lt;img src="figures/github0_account.png" style="width: 70%"&gt;
 
 ---
 ## Create (initialize) repository
@@ -109,8 +110,8 @@ git init
 
 ```sh
 cd Projects
-git clone git@github.com:njuvigny/MOD3.git # SSH
-git clone https://github.com/njuvigny/MOD3.git # HTTPS
+git clone git@github.com:andschar/MOD3.git # SSH
+git clone https://github.com/andschar/MOD3.git # HTTPS
 ```
 
 #### RStudio
@@ -129,10 +130,9 @@ git clone https://github.com/njuvigny/MOD3.git # HTTPS
 
 ---
 class: center, inverse, middle
-## First repository!!
+## First repository (i.e. fork) !!
 
 &lt;img src="figures/git_repo_hooray.jpg" style="width:40%"&gt;
-
 
 ---
 class: inverse, center, middle
@@ -178,18 +178,22 @@ git push origin main
 ---
 ## Git/Github Workflow
 
+&lt;img src="figures/GIT_workflow.png" width="600px" /&gt;
+
+---
+## Git/Github Workflow
+
 1. Create or Fork a repo
 
 2. Clone the repo to local machine
 
 3. Local changes
 
-4. Stage (i.e. add) &amp; Comit changes to Git tree
+4. Stage (i.e. add) &amp; Commit changes to Git tree
 
 5. Push to origin
 
 6. Create a Pull-Request against the remote repository
-
 
 ---
 class: center, inverse, middle
@@ -204,8 +208,8 @@ class: center, inverse, middle
 #### Create/Switch Branch
 
 ```sh
-git checkout -b dev_scharmueller
-git checkout main
+git checkout -b dev_new_feature
+git checkout master
 git status
 git branch
 ```
@@ -215,11 +219,16 @@ git branch
 ---
 ## Branch
 
+&lt;img src="figures/GIT_workflow_branches.png" width="600px" /&gt;
+
+---
+## Branch
+
 #### Merge Branch
 
 ```sh
 git checkout master
-git merge dev_scharmueller
+git merge dev_new_feature
 ```
 
 ---
@@ -239,11 +248,61 @@ git log --all --decorate --oneline --graph
 ---
 ## Branch
 
-#### Pull Request
+#### Pull / Merge Request
 
 From your dev_XXX branch to a new remote dev_XXX branch
 
 ![github9](figures/github9_pr_dev.png)
+
+---
+class: inverse, center, middle
+
+# R solutions
+
+---
+## {usethis} &amp; {gert} package
+
+
+```r
+gert::git_commit()
+usethis::pr_pull()
+usethis::pr_push()
+```
+
+&lt;img src="https://www.garrickadenbuie.com/blog/pull-request-flow-usethis/usethis-pr-flow-medium.jpg" width="650px" /&gt;
+
+.foot-note[
+&lt;https://www.garrickadenbuie.com/blog/pull-request-flow-usethis&gt;
+]
+
+---
+background-image: url(https://i.redd.it/wr308dmuydd71.png)
+background-size: 40%
+background-position: 90%, 50%
+
+## {usethis} &amp; {gert} package
+
+
+```r
+gert::git_commit()
+usethis::pr_pull()
+usethis::pr_push()
+```
+
+- Convenience __wrapper__ around git
+
+- Advantage:
+
+    - Easier to use
+    
+- Disadvantage:
+
+  - More software to maintain
+  
+  - Might break something in the future
+  
+  - You might not always use R in your career
+  
 ---
 class: center, inverse, middle
 
@@ -257,6 +316,8 @@ class: center, inverse, middle
 - YouTube
 - &lt;https://guides.github.com/activities/hello-world&gt;
 - &lt;https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN&gt;
+- &lt;https://ohshitgit.com&gt;
+- &lt;https://www.garrickadenbuie.com/blog/pull-request-flow-usethis&gt;
 
 ### Made with
 - &lt;https://github.com/rstudio/rmarkdown&gt;
@@ -264,22 +325,37 @@ class: center, inverse, middle
 - &lt;https://github.com/yihui/xaringan&gt;
 
 ---
-## Task
+## Task RMarkdown &amp; Git
 
-- Fork Noel's repo: &lt;https://github.com/njuvigny/MOD3&gt;
-- Clone it to local machine
+- __Fork__ the MOD3 test repo: &lt;https://github.com/andschar/MOD3&gt;
+- __Clone__ the repo to your local machine
 - Create a new branch named dev_YOURSURNAME
-- Change the file __git_intro/task.Rmd__ according to the steps described in said file
-- Create a .html out of the .Rmd file
-- Add &amp; Commit both files in the new branch
-- Push local changes to your repo (HINT: this might cause some trouble ;))
-- Create a Pull Request against Noel's repo
-
+- Change the file _task.Rmd_ according to the steps described in the file
+- Create (i.e. knit) a .html out of the .Rmd file
+- __Stage__ &amp; __Commit__ both files in the new branch
+- __Push__ your local changes to your repo (HINT: this might cause some trouble ;))
+- Create a __Pull Request__ against my original repo &lt;andschar/MOD3-student&gt;
 
 ---
-class: center, middle, inverse
+layout: false
+# [Introduction to Git &amp; GitHub](https://andschar.github.io/teaching/GIT)
 
-# Thank you for your attention!
+## Thank you for your attention
+
+### Slides: &lt;https://andschar.github.io/teaching/GIT&gt;
+
+__Andreas Scharmüller__&lt;br&gt;
+
+Quantitative Landscape Ecology&lt;br/&gt;
+iES Landau, Institute for Environmental Sciences&lt;br&gt;
+University of Koblenz-Landau&lt;br&gt;
+University of Strasbourg
+
+&lt;img src="https://upload.wikimedia.org/wikipedia/de/thumb/9/9f/Twitter_bird_logo_2012.svg/1259px-Twitter_bird_logo_2012.svg.png" width="20"&gt; @andschar &lt;br/&gt;
+&lt;img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"&gt; andschar@protonmail.com
+
+&lt;img src="https://www.uni-koblenz-landau.de/de/landau/fb7/umweltwissenschaften/logos/land-ecol-neu.jpg" width="100"&gt;
+&lt;img src="https://www.uni-koblenz-landau.de/de/uni/organisation/verwaltung/abteilungen/abt-1/dokumente-ab1/uni-logo-farbig.jpg" width="200"&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -11,19 +11,19 @@ editor_options:
 
 ## Plot
 
-2. Here, add a scatter plot of the iris data set depicting Sepal.Length and Sepal.Width
-variables and print the figure and the code snippet.
+2. Add a scatter plot of the iris data set depicting Sepal.Length and Sepal.Width
+variables and print the figure and the code snippet here.
 
 ## Image
 
-3. Here, add the file git_intro/markdown_meme.jpg to the document
+3. Add the file git_intro/markdown_meme.jpg to the document here.
 
 HINT: If this wasn't covered in the course, just google it ;)
 
 ## Formula
 
-4. Here, add a formula which calculates the Toxic Unit of a concentration (ci) and and
-EC50 value together with the corresponding text (see Markdown slides).
+4. Add a formula which calculates the Toxic Unit of a concentration (ci) and and
+EC50 value together with the corresponding text (see Markdown slides) here.
 
 ## Other
 

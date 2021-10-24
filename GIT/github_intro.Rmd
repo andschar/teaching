@@ -1,9 +1,9 @@
 ---
 title: "Introduction to Git & GitHub"
 subtitle: "Terminal, RStudio"
-author: "Andreas Scharmüller, Prof. Ralf B. Schäfer"
+author: "Andreas Scharmüller"
 institute: "AG Landscape Ecology"
-date: "2020/10/29 (updated: `r Sys.Date()`)"
+date: "2021-10-25 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -44,7 +44,7 @@ knitr::opts_chunk$set(dpi=300,fig.width=7)
 
 <https://github.com/git-guides/install-git>
 
-#### On Linux
+#### On Linux Ubuntu
 
 ```sh
 sudo apt update
@@ -55,17 +55,17 @@ sudo apt install git-all
 
 Download manually
 
-## Start Git
+## Setup Local Git __Repository__
 
 ```sh
-cd my_directory
+cd my_root_directory
 git init
 ```
 
 ---
 ## Create a GitHub account
 
-<img src="figures/github_account.png" style="width: 70%">
+<img src="figures/github0_account.png" style="width: 70%">
 
 ---
 ## Create (initialize) repository
@@ -106,8 +106,8 @@ git init
 
 ```sh
 cd Projects
-git clone git@github.com:njuvigny/MOD3.git # SSH
-git clone https://github.com/njuvigny/MOD3.git # HTTPS
+git clone git@github.com:andschar/MOD3.git # SSH
+git clone https://github.com/andschar/MOD3.git # HTTPS
 ```
 
 #### RStudio
@@ -126,10 +126,9 @@ git clone https://github.com/njuvigny/MOD3.git # HTTPS
 
 ---
 class: center, inverse, middle
-## First repository!!
+## First repository (i.e. fork) !!
 
 <img src="figures/git_repo_hooray.jpg" style="width:40%">
-
 
 ---
 class: inverse, center, middle
@@ -175,18 +174,24 @@ git push origin main
 ---
 ## Git/Github Workflow
 
+```{r workflow-image, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/GIT_workflow.png')
+```
+
+---
+## Git/Github Workflow
+
 1. Create or Fork a repo
 
 2. Clone the repo to local machine
 
 3. Local changes
 
-4. Stage (i.e. add) & Comit changes to Git tree
+4. Stage (i.e. add) & Commit changes to Git tree
 
 5. Push to origin
 
 6. Create a Pull-Request against the remote repository
-
 
 ---
 class: center, inverse, middle
@@ -201,8 +206,8 @@ class: center, inverse, middle
 #### Create/Switch Branch
 
 ```sh
-git checkout -b dev_scharmueller
-git checkout main
+git checkout -b dev_new_feature
+git checkout master
 git status
 git branch
 ```
@@ -212,11 +217,18 @@ git branch
 ---
 ## Branch
 
+```{r workflow-branches-image, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/GIT_workflow_branches.png')
+```
+
+---
+## Branch
+
 #### Merge Branch
 
 ```sh
 git checkout master
-git merge dev_scharmueller
+git merge dev_new_feature
 ```
 
 ---
@@ -236,11 +248,61 @@ git log --all --decorate --oneline --graph
 ---
 ## Branch
 
-#### Pull Request
+#### Pull / Merge Request
 
 From your dev_XXX branch to a new remote dev_XXX branch
 
 ![github9](figures/github9_pr_dev.png)
+
+---
+class: inverse, center, middle
+
+# R solutions
+
+---
+## {usethis} & {gert} package
+
+```{r usethis-gert1, eval=FALSE}
+gert::git_commit()
+usethis::pr_pull()
+usethis::pr_push()
+```
+
+```{r usethis-gert1-image, echo=FALSE, out.width="650px"}
+knitr::include_graphics("https://www.garrickadenbuie.com/blog/pull-request-flow-usethis/usethis-pr-flow-medium.jpg")
+```
+
+.foot-note[
+<https://www.garrickadenbuie.com/blog/pull-request-flow-usethis>
+]
+
+---
+background-image: url(https://i.redd.it/wr308dmuydd71.png)
+background-size: 40%
+background-position: 90%, 50%
+
+## {usethis} & {gert} package
+
+```{r usethis-gert2, eval=FALSE}
+gert::git_commit()
+usethis::pr_pull()
+usethis::pr_push()
+```
+
+- Convenience __wrapper__ around git
+
+- Advantage:
+
+    - Easier to use
+    
+- Disadvantage:
+
+  - More software to maintain
+  
+  - Might break something in the future
+  
+  - You might not always use R in your career
+  
 ---
 class: center, inverse, middle
 
@@ -255,6 +317,7 @@ class: center, inverse, middle
 - <https://guides.github.com/activities/hello-world>
 - <https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN>
 - <https://ohshitgit.com>
+- <https://www.garrickadenbuie.com/blog/pull-request-flow-usethis>
 
 ### Made with
 - <https://github.com/rstudio/rmarkdown>
@@ -262,19 +325,34 @@ class: center, inverse, middle
 - <https://github.com/yihui/xaringan>
 
 ---
-## Task
+## Task: RMarkdown & Git
 
-- Fork Noel's repo: <https://github.com/njuvigny/MOD3>
-- Clone it to local machine
+- __Fork__ the MOD3 test repo: <https://github.com/andschar/MOD3>
+- __Clone__ the repo to your local machine
 - Create a new branch named dev_YOURSURNAME
-- Change the file __git_intro/task.Rmd__ according to the steps described in said file
-- Create a .html out of the .Rmd file
-- Add & Commit both files in the new branch
-- Push local changes to your repo (HINT: this might cause some trouble ;))
-- Create a Pull Request against Noel's repo
-
+- Change the file _task.Rmd_ according to the steps described in the file
+- Create (i.e. knit) a .html out of the .Rmd file
+- __Stage__ & __Commit__ both files in the new branch
+- __Push__ your local changes to your repo (HINT: this might cause some trouble ;))
+- Create a __Pull Request__ against my original repo <andschar/MOD3-student>
 
 ---
-class: center, middle, inverse
+layout: false
+# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT)
 
-# Thank you for your attention!
+## Thank you for your attention!
+
+### Slides: <https://andschar.github.io/teaching/GIT>
+
+__Andreas Scharmüller__<br>
+
+Quantitative Landscape Ecology<br/>
+iES Landau, Institute for Environmental Sciences<br>
+University of Koblenz-Landau<br>
+University of Strasbourg
+
+<img src="https://upload.wikimedia.org/wikipedia/de/thumb/9/9f/Twitter_bird_logo_2012.svg/1259px-Twitter_bird_logo_2012.svg.png" width="20"> @andschar <br/>
+<img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"> andschar@protonmail.com
+
+<img src="https://www.uni-koblenz-landau.de/de/landau/fb7/umweltwissenschaften/logos/land-ecol-neu.jpg" width="100">
+<img src="https://www.uni-koblenz-landau.de/de/uni/organisation/verwaltung/abteilungen/abt-1/dokumente-ab1/uni-logo-farbig.jpg" width="200">
