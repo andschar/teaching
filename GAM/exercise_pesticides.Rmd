@@ -7,6 +7,8 @@ editor_options:
 
 # Setup
 ```{r echo=FALSE, include=FALSE}
+require(knitr)
+require(rmarkdown)
 # packages
 require(data.table)
 require(mgcv)
@@ -20,6 +22,7 @@ theme_set(theme_minimal())
 
 # Data
 ```{r}
+pest = readRDS('/home/scharmueller/Projects/teaching/GAM/data/pesticides.rds')
 pest = readRDS('GAM/data/pesticides.rds')
 ```
 
@@ -59,5 +62,46 @@ pend[ , pa := as.numeric(as.logical(value_fin)) ] # presence-absence
   - Does this improve the model fit?
   
 - Predict and plot the `doy` variable of the best model
+
+
+```{r}
+# Option 1
+m1 = gam(pa ~ s(doy, bs = 'cc') + s(year),
+         data = pend) 
+new = with(pend,
+           expand.grid(doy = seq(1, 150, length.out = 100),
+                       year = seq(min(year), max(year), length.out = 100)))
+setDT(new) # data.table
+
+plot(m1, pages = 1)
+
+prd = predict(m1,
+              newdata = new,
+              type = 'response',
+              exclude = 's(year)',
+              se.fit = TRUE)
+new[ , `:=`
+     (fit = prd$fit,
+       lwr = prd$fit - (2 * prd$se.fit),
+       upr = prd$fit + (2 * prd$se.fit)) ]
+
+ggplot(new, aes(y = fit, x = doy)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1) +
+  geom_line() +
+  scale_y_continuous(limits = c(0,1))
+
+# Option 2
+pend$f1 = fitted(m1)
+ggplot(pend, aes(y = f1, x = doy)) +
+  geom_line()
+```
+
+
+
+
+
+
+
+
 
 
