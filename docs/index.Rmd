@@ -8,7 +8,7 @@ tba
 
 ## GIT
 
-- [Introduction to Git & GitHub](GIT/Git.html)
+- [Introduction to Git & GitHub](GIT/GIT.html)
 
 ## PostgreSQL and PostGIS
 
