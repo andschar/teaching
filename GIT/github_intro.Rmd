@@ -354,7 +354,7 @@ layout: false
 
 ## Thank you for your attention!
 
-### Slides: <andschar.github.io/teaching/GIT.html>
+### Slides: <https://andschar.github.io/teaching/GIT.html>
 
 __Andreas Scharmüller__<br>
 
