@@ -6,6 +6,7 @@ institute: "AG Landscape Ecology"
 date: "2021-10-25 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    self_contained: true
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -14,6 +15,9 @@ output:
 editor_options: 
   chunk_output_type: console
 ---
+background-image: url(https://miro.medium.com/max/1240/0*6FETDgCn09uY2C4t.jpg)
+background-position: 80%, 30%
+background-size: 30%
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
@@ -21,19 +25,11 @@ knitr::opts_chunk$set(dpi=300,fig.width=7)
 
 ## Why Git?
 
-.pull-left[
-
 - Version control software
 - Modern software development
   - most R-packages
 - Git is the __software__
 - GitHub is the __platform__
-]
-
-.pull-right[
-
-<img src="figures/git_hub.jpeg" style="background-image">
-]
 
 #### Other Plattforms
 - GitLab: <https://about.gitlab.com>
@@ -65,7 +61,9 @@ git init
 ---
 ## Create a GitHub account
 
-<img src="figures/github0_account.png" style="width: 70%">
+```{r github-account-image, echo=FALSE, out.width="700px"}
+knitr::include_graphics('figures/github0_account.png')
+```
 
 ---
 ## Create (initialize) repository
@@ -78,13 +76,16 @@ git init
 
 #### Remote
 
-<img src="figures/github0_repo.png" style="width: 80%">
+```{r github-repo-create-remote-image, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/github0_repo.png')
+```
 
 ---
 ## Create (initialize) repository
 
-<img src="figures/github0_repo2.png" style="width: 70%">
-
+```{r github-repo-create-image, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/github0_repo2.png')
+```
 
 ---
 ## Fork a repository
@@ -112,7 +113,9 @@ git clone https://github.com/andschar/MOD3.git # HTTPS
 
 #### RStudio
 
-<img src="figures/github3_clone2.png" style="width:50%;">
+```{r github-rstudio-image, echo=FALSE, out.width="400px"}
+knitr::include_graphics('figures/github3_clone2.png')
+```
 
 ---
 ## RStudio
@@ -128,7 +131,10 @@ git clone https://github.com/andschar/MOD3.git # HTTPS
 class: center, inverse, middle
 ## First repository (i.e. fork) !!
 
-<img src="figures/git_repo_hooray.jpg" style="width:40%">
+
+```{r hooray-image, echo=FALSE, out.width="400px"}
+knitr::include_graphics('figures/git_repo_hooray.jpg')
+```
 
 ---
 class: inverse, center, middle
@@ -136,7 +142,9 @@ class: inverse, center, middle
 
 Make changes to the `.txt`, `.R`, `.python` or to whatever file...
 
-<img src="figures/github4_local_cahnges.gif" style="width:60%;">
+```{r github-changes-local-image, echo=FALSE, out.width="400px"}
+knitr::include_graphics('figures/github4_local_cahnges.gif')
+```
 
 ---
 ## Stage your changes
@@ -174,7 +182,7 @@ git push origin main
 ---
 ## Git/Github Workflow
 
-```{r workflow-image, echo=FALSE, out.width="600px"}
+```{r workflow-image, echo=FALSE, out.width="800px"}
 knitr::include_graphics('figures/GIT_workflow.png')
 ```
 
@@ -197,8 +205,9 @@ knitr::include_graphics('figures/GIT_workflow.png')
 class: center, inverse, middle
 # Branches
 
-<img src="figures/git_branch.jpg" style="width:40%;">
-
+```{r branch-image, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/git_branch.jpg')
+```
 
 ---
 ## Branch
@@ -217,7 +226,7 @@ git branch
 ---
 ## Branch
 
-```{r workflow-branches-image, echo=FALSE, out.width="600px"}
+```{r workflow-branches-image, echo=FALSE, out.width="700px"}
 knitr::include_graphics('figures/GIT_workflow_branches.png')
 ```
 
@@ -242,8 +251,9 @@ First 8 commits of my R-package repo: __andschar/dbreport__
 git log --all --decorate --oneline --graph
 ```
 
-<img src="figures/github9_adog.png" style="width:100%;">
-
+```{r adog, echo=FALSE, out.width="600px"}
+knitr::include_graphics('figures/github9_adog.png')
+```
 
 ---
 ## Branch
@@ -306,7 +316,9 @@ usethis::pr_push()
 ---
 class: center, inverse, middle
 
-<img src="figures/git_simply.jpeg">
+```{r boromir-git, echo=FALSE, out.width="650px"}
+knitr::include_graphics("figures/boromir-git.jpeg")
+```
 
 ---
 ## Material
