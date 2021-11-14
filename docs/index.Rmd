@@ -10,8 +10,10 @@ tba
 
 - [Introduction to Git & GitHub](GIT.html)
 
-## PostgreSQL and PostGIS
+## PostgreSQL
 
-tba
+- [Introduction to PostgreSQL](PostgreSQL-intro.html)
 
+## PostGIS
 
+- [Introduction to PostGIS](PostGIS-intro.html)

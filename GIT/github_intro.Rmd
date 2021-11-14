@@ -21,6 +21,7 @@ background-size: 30%
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
+ggplot2::theme_set(theme_minimal())
 ```
 
 ## Why Git?
