@@ -1,11 +1,12 @@
 ---
-title: "Relational databases & SQL"
-subtitle: "Introduction with PostgreSQL"
+title: "Introduction to PostgreSQL"
+subtitle: "Relational databases & SQL"
 author: "Andreas Scharmüller"
 institute: "AG Landscape Ecology"
-date: "2020-11-16 (updated: `r Sys.Date()`)"
+date: "2021-11-13 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    self_contained: true
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -23,26 +24,6 @@ require(tweetrmd)
 knitr::opts_chunk$set(dpi = 300, fig.width = 7)
 ```
 
-## Installation
-
-#### Windows
-
-<https://www.postgresql.org/download/windows>
-
-#### Mac OS X
-
-<https://www.postgresql.org/download/macosx>
-
-#### Linux (Debian-based)
-
-```{sh eval=FALSE}
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt-get update
-sudo apt-get -y install postgresql
-```
-
----
 ## What is SQL?
 
 - SQL - Structured Query Language
@@ -106,6 +87,30 @@ style="width:25%">
 
 
 ]
+
+---
+class: center, inverse, middle
+## Installation
+
+---
+## Installation
+
+#### Windows
+
+<https://www.postgresql.org/download/windows>
+
+#### Mac OS X
+
+<https://www.postgresql.org/download/macosx>
+
+#### Linux (Debian-based)
+
+```{sh eval=FALSE}
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install postgresql
+```
 
 ---
 class: center, inverse, middle
@@ -534,14 +539,12 @@ class: center, inverse, middle
 
 ]
 
-
-
 ---
 class: center, inverse, middle
-## Advanced Queries
+## More Queries
 
 ---
-## Queries - SELECT
+## Queries - SELECT CASE WHEN
 
 ```sql
 SELECT
@@ -579,8 +582,8 @@ CREATE new_table (
 ## Queries - INSERT INTO
 
 ```sql
-INSERT INTO my_table (id)
-
+INSERT INTO films (code, title, did, date_prod, kind)
+    VALUES ('T_601', 'Yojimbo', 106, '1961-06-16', 'Drama');
 ```
 
 ---
@@ -588,19 +591,9 @@ INSERT INTO my_table (id)
 
 ```sql
 UPDATE my_table SET
-  col = 
+  col = 4
+WHERE col = 3;
 ```
-
----
-## Queries - WINDOW FUNCTIONS
-
-
-
----
-## Indexes
-
-TODO
-
 
 ---
 ## Material
@@ -619,7 +612,7 @@ YouTube
 ## Slides
 
 - OLAT
-- <https://andschar.github.io/teaching>
+- <https://andschar.github.io/teaching/PostgreSQL-intro.html>
 
 
 ### Made with
@@ -627,10 +620,23 @@ YouTube
 - <https://github.com/yihui/knitr>
 - <https://github.com/yihui/xaringan>
 
-
 ---
-class: center, middle, inverse
+layout: false
+# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT.html)
 
-# Thank you for your attention!
+## Thank you for your attention!
 
+### Material: <https://andschar.github.io/teaching>
 
+__Andreas Scharmüller__<br>
+
+Quantitative Landscape Ecology<br/>
+iES Landau, Institute for Environmental Sciences<br>
+University of Koblenz-Landau<br>
+University of Strasbourg
+
+<img src="https://upload.wikimedia.org/wikipedia/de/thumb/9/9f/Twitter_bird_logo_2012.svg/1259px-Twitter_bird_logo_2012.svg.png" width="20"> @andschar <br/>
+<img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"> andschar@protonmail.com
+
+<img src="https://www.uni-koblenz-landau.de/de/landau/fb7/umweltwissenschaften/logos/land-ecol-neu.jpg" width="100">
+<img src="https://www.uni-koblenz-landau.de/de/uni/organisation/verwaltung/abteilungen/abt-1/dokumente-ab1/uni-logo-farbig.jpg" width="200">
