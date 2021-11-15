@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       dpi = 180)
 # packages
+require(dplyr)
 require(sf)
 require(ggplot2)
 # variables
@@ -135,9 +136,9 @@ cat(list.files(tmp, 'cities'), sep = '\n')
 
 <br><br>
 
-- Easy data storage (comapared on standard GIS software)
+- Easy data storage
 
-- Standard simple feature formatting allows spatial data to be accessed by other software
+- Simple Feature standard
 
 - Automation of processes
 
@@ -173,21 +174,29 @@ Illustration (c) by [Allison Horst](https://github.com/allisonhorst/stats-illust
 
 ![](https://libgeos.org/web-logo.png)
 
-- [PROJ](https://proj.org)
+- [PROJ](https://proj.org) - Coordinate transformation software library
 
 ![](https://proj.org/_static/logo.png)
-
-
 ---
 class: center, inverse, middle
 ## PostGIS functions
+### R {sf} equivalents
 
 ---
-## Palar River Example
+## Palar River
 
 ![](https://www.turismofvg.it/proxyvfs.axd/popup/r94157/file-jpg)
+
 ---
-## Palar River Example
+## Palar River
+```{sql eval=FALSE, echo=TRUE}
+SELECT *
+FROM palar
+LIMIT 3
+```
+
+---
+## Palar River
 
 ```{r}
 knitr::kable(palar[1:3,])
@@ -341,26 +350,76 @@ ggplot() +
 
 ```{sql eval=FALSE, echo=TRUE}
 SELECT
-  cor.label, cor.label,
+  cor.code_18, cor.label,
   ST_Intersection(ST_Buffer(riv.geom, 500), cor.geom) geom
 FROM
   palar riv,
   corine cor
-WHERE ST_DWithin(tbl1.geom, tbl2.geom, 500)
+WHERE ST_DWithin(riv.geom, cor.geom, 500)
 ```
 
-```{r fig.width=4, fig.height=2}
-st_intersection(st_buffer(st_union(palar), 500), corine) |>
-  ggplot() +
-  geom_sf() +
-  theme(axis.text = element_blank())
+```{r eval=FALSE, echo=TRUE}
+palar_buf = palar |>
+  st_union() |>
+  st_buffer(500)
+corine |>
+  st_intersection(palar_buf)
+  
+st_intersection(corine, st_buffer(st_union(palar), 500))
 ```
 
 ---
 ## Intersection
 
-```{r eval=FALSE, echo=TRUE}
-st_intersection(st_buffer(st_union(palar), 500), corine)
+```{r fig.width=6, fig.height=4}
+palar_buf = palar |>
+  st_union() |>
+  st_buffer(500)
+palar_int = corine |>
+  st_intersection(palar_buf)
+
+ggplot(palar_int) +
+  geom_sf(aes(fill = label)) +
+  labs(fill = 'Land Use') +
+  theme(axis.text = element_blank(),
+        legend.position = 'right')
+```
+
+---
+## Aggregate
+
+```{sql eval=FALSE, echo=TRUE}
+WITH tmp AS (
+  SELECT
+    cor.code_18, cor.label,
+    ST_Intersection(ST_Buffer(riv.geom, 500), cor.geom) geom
+  FROM
+    palar riv,
+    corine cor
+  WHERE ST_DWithin(riv.geom, cor.geom, 500)
+)
+SELECT
+  label, SUM(ST_Area(geom)) AS area
+FROM tmp
+GROUP BY label
+```
+
+
+```{r echo=TRUE}
+palar_lulc = palar_int |>
+  mutate(area = st_area(palar_int)) |>
+  group_by(label) |>
+  summarise(area = sum(area))
+```
+
+---
+## Aggregate
+
+```{r}
+palar_lulc |>
+  as_tibble() |>
+  select(label, area) |>
+  knitr::kable()
 ```
 
 ---
