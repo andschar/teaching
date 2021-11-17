@@ -596,9 +596,13 @@ WHERE col = 3;
 ```
 
 ---
-## Material
+## Resources
 
 PostgreSQL: <https://www.postgresql.org/docs/13/index.html>
+
+PostgreSQL JOINs: <https://www.postgresqltutorial.com/postgresql-joins>
+
+PostgreSQL Resources: <https://www.postgresql.org/docs/online-resources>
 
 freeCodeCamp: <https://www.freecodecamp.org/news/sql-and-databases-full-course>
 
@@ -622,11 +626,11 @@ YouTube
 
 ---
 layout: false
-# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT.html)
+# [Introduction to PostgreSQL](https://andschar.github.io/teaching/PostgreSQL-intro.html)
 
 ## Thank you for your attention!
 
-### Material: <https://andschar.github.io/teaching>
+<https://andschar.github.io/teaching>
 
 __Andreas Scharmüller__<br>
 

@@ -21,7 +21,10 @@ background-size: 30%
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
-ggplot2::theme_set(theme_minimal())
+# packages
+require(ggplot2)
+# variables
+theme_set(theme_minimal())
 ```
 
 ## Why Git?
@@ -322,7 +325,7 @@ knitr::include_graphics("figures/boromir-git.jpeg")
 ```
 
 ---
-## Material
+## Resources
 
 - OpenOlat
 - StackOverflow
@@ -331,6 +334,13 @@ knitr::include_graphics("figures/boromir-git.jpeg")
 - <https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN>
 - <https://ohshitgit.com>
 - <https://www.garrickadenbuie.com/blog/pull-request-flow-usethis>
+
+---
+## Slides
+
+- OLAT
+- <https://andschar.github.io/teaching/GIT.html>
+
 
 ### Made with
 - <https://github.com/rstudio/rmarkdown>
@@ -355,7 +365,7 @@ layout: false
 
 ## Thank you for your attention!
 
-### Slides: <https://andschar.github.io/teaching/GIT.html>
+<https://andschar.github.io/teaching>
 
 __Andreas Scharmüller__<br>
 

@@ -481,11 +481,11 @@ CREATE INDEX palar_geom_gist_idx ON palar USING GIST (geom);
 
 ---
 layout: false
-# [Introduction to Git & GitHub](https://andschar.github.io/teaching/GIT.html)
+# [Introduction to PostGIS](https://andschar.github.io/teaching/PostGIS-intro.html)
 
 ## Thank you for your attention!
 
-### Material: <https://andschar.github.io/teaching>
+<https://andschar.github.io/teaching>
 
 __Andreas Scharmüller__<br>
 

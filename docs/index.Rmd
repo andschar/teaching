@@ -4,7 +4,7 @@ title: "Teaching Material"
 
 ## Generalized Additive Models (GAM)
 
-tba
+- [Introduction to Generalized Additive Models (GAM)](GAM-intro.html)
 
 ## GIT
 

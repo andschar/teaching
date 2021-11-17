@@ -20,7 +20,4 @@ Model the CO2 uptake of plants between two different locations.
 CO2$Plant_uo = factor(CO2$Plant, ordered = FALSE) # remove ordering factor
 
 head(CO2)
-
-
-
 ```

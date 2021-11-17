@@ -6,6 +6,7 @@ institute: "AG Landscape Ecology"
 date: "2020-11-09 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
+    self_contained: true
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -99,18 +100,28 @@ mochlor = dat[ name == 'Metolachlor' ]
 # Simulation example -----------------------------------------------------------
 # simulation
 set.seed(1234)
-sim = gamSim(eg = 1, n = 100, dist = "normal", scale = 2, verbose = FALSE)
-sim$y = sim$y - (sim$f1 + sim$f0 + sim$f3)
-sim$y = sim$y + 5
-sim$x = sim$x2
+dat = gamSim(eg = 1, n = 100, dist = "normal", scale = 2, verbose = FALSE)
+dat$y = dat$y - (dat$f1 + dat$f0 + dat$f3)
+dat$y = dat$y + 5
+dat$x = dat$x2
 
-sim = sim[ with(sim, order(x)), ] # TODO Is this the right order?
+dat = dat[ with(dat, order(x)), ]
 ```
 
+# Nonlinearity
+
+```{r fig.width=6, fig.height=3}
+ggplot(dat, aes(y = y, x = x)) +
+  geom_point()
+```
+
+.foot-note[
+<https://noamross.github.io/gams-in-r-course>
+]
+
+---
 class: center, inverse, middle
-
 # Linear Regression
-
 
 ---
 # Linear Model (LM)
@@ -132,12 +143,12 @@ lm(y ~ x,
 ]
 
 .pull-right[
-__R2:__ `r round(summary(lm(y ~ x, data = sim))$r.squared, 2)`
-__AIC:__ `r AIC(lm(y ~ x, data = sim))`
+__R2:__ `r round(summary(lm(y ~ x, data = dat))$r.squared, 2)`
+__AIC:__ `r AIC(lm(y ~ x, data = dat))`
 ]
 
 ```{r echo=FALSE, fig.width=6, fig.height=3}
-ggplot(sim, aes(y = y, x = x)) +
+ggplot(dat, aes(y = y, x = x)) +
   geom_point() +
   geom_smooth(formula = y ~ x,
               method = 'lm',
@@ -166,12 +177,12 @@ glm(y ~ x,
 ]
 
 .pull-right[
-__R2:__ `r round(with(summary(glm(y ~ x, data = sim, family = 'Gamma')), 1 - deviance/null.deviance), 2)`
-__AIC:__ `r round(AIC(glm(y ~ x, data = sim, family = 'Gamma')))`
+__R2:__ `r round(with(summary(glm(y ~ x, data = dat, family = 'Gamma')), 1 - deviance/null.deviance), 2)`
+__AIC:__ `r round(AIC(glm(y ~ x, data = dat, family = 'Gamma')))`
 ]
 
 ```{r echo=FALSE, fig.width=6, fig.height=3}
-ggplot(sim, aes(y = y, x = x)) +
+ggplot(dat, aes(y = y, x = x)) +
   geom_point() +
   geom_smooth(formula = y ~ x,
               method = 'glm',
@@ -211,18 +222,18 @@ lm(y ~ poly(x, 3),
 
 .pull-right[
 3rd order |
-__R2:__  `r round(summary(lm(y ~ poly(x, 3), data = sim))$r.squared, 2)`
-__AIC:__ `r round(AIC(lm(y ~ poly(x, 3), data = sim)))`
+__R2:__  `r round(summary(lm(y ~ poly(x, 3), data = dat))$r.squared, 2)`
+__AIC:__ `r round(AIC(lm(y ~ poly(x, 3), data = dat)))`
 
 9th order |
-__R2:__ `r round(summary(lm(y ~ poly(x, 9), data = sim))$r.squared, 2)`
-__AIC:__ `r round(AIC(lm(y ~ poly(x, 9), data = sim)))`
+__R2:__ `r round(summary(lm(y ~ poly(x, 9), data = dat))$r.squared, 2)`
+__AIC:__ `r round(AIC(lm(y ~ poly(x, 9), data = dat)))`
 ]
 
 
 
 ```{r echo=FALSE, fig.width=6, fig.height=3}
-ggplot(sim, aes(x, y)) +
+ggplot(dat, aes(x, y)) +
   geom_point() +
   geom_smooth(method = 'lm', formula = y ~ poly(x, 3),
               se = T, aes(col = 'goldenrod')) +
@@ -239,7 +250,7 @@ class: center, inverse, middle
 # Generalized Additive Models (GAMs)
 
 ---
-# Generalized Additive Models (GAM)
+# Generalized Additive Models (GAMs)
 
 .pull-left[
 ```{r eval=FALSE}
@@ -250,14 +261,14 @@ gam(y ~ s(x),
 ]
 
 .pull-right[
-__Dev. explained:__ `r round(summary(gam(y ~ s(x), data = sim))$dev.expl, 2)`
+__Dev. explained:__ `r round(summary(gam(y ~ s(x), data = dat))$dev.expl, 2)`
 
-__AIC:__ `r round(AIC(gam(y ~ s(x), data = sim)))`
+__AIC:__ `r round(AIC(gam(y ~ s(x), data = dat)))`
 ]
 
 
 ```{r echo=FALSE, fid.width=6, fig.height=3}
-ggplot(sim, aes(y = y, x = x)) +
+ggplot(dat, aes(y = y, x = x)) +
   geom_point() +
   geom_smooth(formula = y ~ s(x),
               method = 'gam',
@@ -267,6 +278,26 @@ ggplot(sim, aes(y = y, x = x)) +
                      values = 'blue',
                      labels = 'GAM')
 ```
+
+---
+# Generalized Additive Models (GAMs)
+
+$$y_i = \beta_0 + f_1(x_{1i}) + f_2(x_{2i}) + f_3(x_{3i},x_{4i}) + ... + \epsilon_i, \epsilon \sim N(0,\sigma^2)$$
+
+$$\mathbb{E}(Y) = g^{-1} \bigg( \beta_0+ \sum_{j=1}^Jf_j(x_j)\bigg)$$
+$$f_j(x_j) = \sum_{k=1}^K \beta_{j,k} b_{j,k} (x_j)$$
+
+- Smoothing function: $f()$
+
+    - (Penalized) Splines
+    
+    - Knots ($K$)
+
+- $K$ Basis functions: $b_{j,k}$
+
+- $K$ Coefficients: $\beta_{j,k}$
+
+- Smoothing parameter
 
 ---
 # Generalized Additive Models (GAMs)
@@ -295,57 +326,23 @@ ggplot(sim, aes(y = y, x = x)) +
 ---
 # Generalized Additive Models (GAMs)
 
-$$y_i = \beta_0 + f_1(x_{1i}) + f_2(x_{2i}) + f_3(x_{3i},x_{4i}) + ... + \epsilon_i, \epsilon \sim N(0,\sigma^2)$$
+- Predictor replaced by $K$ synthetic predictors (Basis Functions)
 
-$$\mathbb{E}(Y) = g^{-1} \bigg( \beta_0+ \sum_{j=1}^Jf_j(x_j)\bigg)$$
-$$f_j(x_j) = \sum_{k=1}^K \beta_{j,k} b_{j,k} (x_j)$$
+- Basis Functions are Weighted by Coefficients
 
-- Smoothing function: $f()$
+- Summed to build Regression Line __(Spline)__
 
-    - Splines
-    
-    - Konts: $K$
+- Wiggliness is Penalized
 
-- $K$ Basis functions: $b_{j,k}$
-
-- $K$ Coefficients: $\beta_{j,k}$
-
-- Smoothing parameter
+  - Minimize Sums of Squared Error (SSE)
+  
+  - Minimize Wiggliness (Overfitting)
+  
+$$Fit = Likelihood - \lambda \times Wiggliness$$
+$$\hat{\beta} = arg\,min_\beta || y-X\beta||^2 + \lambda \beta^TS\beta$$
 
 ---
-class: center, inverse, middle
-# Splines
-
-<img src="https://s3files.core77.com/blog/images/513221_81_55368_4VoVB83F4.jpg" width="50%">
-
-.footnote[
-https://www.core77.com/posts/55368/When-Splines-Were-Physical-Objects
-]
-
----
-# Splines
-
-- Splines replace a predictor variable, with a set of synthetic predictor variables.
-
-- Family of functions or transformations that can be applied to $x$
-
-    - Polynomial basis function
-    
-    $$f_j(x_i) = x_i^j$$
-
-    - Piecewise constant basis function:
-
-    $$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$
-- Penalized splines reduce wiggliness
-
-.footnote[
-https://www.youtube.com/watch?v=ENxTrFf9a7c&t=2226
-
-https://www.tjmahr.com/random-effects-penalized-splines-same-thing/
-]
-
----
-# Splines
+# Generalized Additive Models (GAMs)
 
 ### Example: Airquality
 
@@ -373,7 +370,7 @@ airqu$fit1 = fitted(air1)
 ```
 
 ---
-# Splines
+# Generalized Additive Models (GAMs)
 
 ### Example: Airquality
 
@@ -387,25 +384,52 @@ ggplot(airqu, aes(y = Ozone, x = Wind)) +
 ```
 
 ---
+class: center, inverse, middle
 # Splines
 
+<img src="https://s3files.core77.com/blog/images/513221_81_55368_4VoVB83F4.jpg" width="50%">
+
+.footnote[
+<https://www.core77.com/posts/55368/When-Splines-Were-Physical-Objects>
+]
+
+---
+# Splines
+
+Predictor replaced by K synthetic predictors (Basis Functions)
+
 ```{r eval=FALSE}
-predict(air1, type = 'lpmatrix')
+predict(air1, type = 'lpmatrix') # or: model.matrix(air1)
 ```
 
 ```{r echo=FALSE, fig.height=4}
 # plot: model matrix
 ggmatplot(lpm2, x_axis_column = 1) +
-  labs(title = 'Unweighted Basis Functions',
-       y = 'Ozone', x = 'Wind')
+  labs(title = NULL, y = 'Ozone', x = 'Wind')
 ```
 
 ---
 # Splines
 
+Basis Functions are Weighted by Coefficients
+
 ```{r eval=FALSE}
 predict(air1, type = 'lpmatrix') %*% diag(coef(air1))
 ```
+
+```{r echo=FALSE, fig.height=4}
+# plot: WEighted
+lpm_weighted = lpm %*% diag(coef(air1))
+lpm2_weighted = cbind(airqu$Wind, lpm_weighted)
+# plot: Weighted Fit
+ggmatplot(lpm2_weighted, x_axis_column = 1) +
+  labs(title = NULL, y = 'Ozone', x = 'Wind')
+```
+
+---
+# Splines
+
+Summed to build Regression Line (Spline)
 
 ```{r echo=FALSE, fig.height=4}
 # plot: WEighted
@@ -418,58 +442,21 @@ ggmatplot(lpm2_weighted, x_axis_column = 1) +
                fun = sum, 
                geom = "line", 
                size = 1.5) +
-  labs(title = 'Weighted Sum of Basis Functions',
-       y = 'Ozone', x = 'Wind')
+  labs(title = NULL, y = 'Ozone', x = 'Wind')
 ```
 
 ---
 # Splines
 
-```{r echo=FALSE, fig.height=5}
-# TODO how should the knots be ordered?
-
-k = 7
-
-knots = data.frame(x = seq(min(sim$x), max(sim$x), length.out = k))
-spl = smoothCon(s(x, bs = 'cr', k = k),
-                data = sim,#[ ,'x', drop = FALSE],
-                knots = knots)[[1]]
-coefs = coef(gam(y ~ s(x, bs = 'cr', k = k), data = sim))
-fx = spl$X %*% coefs
-bs_coef = sweep(spl$X, 2, coefs, "*")
-bs1 = sweep(spl$X, 2, rep(1, k), "*")
-
-# plot
-ylim <- range(fx, bs_coef)
-op <- par(mar = c(5,4,1,2) + 0.1)
-layout(matrix(1:2, ncol = 2))
-# 1
-plot(fx ~ sim$x, type = "n", ylim = ylim, ylab = "", xlab = "x")
-abline(v = knots$x, lty = "dotted")
-matlines(sim$x, bs1, lwd = 2)
-title(ylab = expression(f(x)), line = 2.75)
-# 2
-plot(fx ~ sim$x, type = "n", ylim = ylim, ylab = "", xlab = "x")
-abline(v = knots$x, lty = "dotted")
-matlines(sim$x, bs_coef, lwd = 2)
-lines(fx ~ sim$x, lwd = 4)
-title(ylab = expression(f(x)), line = 2.75)
-par(op)
-layout(1)
-```
-
----
-# Splines
-
-### Complexity
+### Complexity !
 
 ```{r}
-lm1 = lm(y ~ x, data = sim)
+lm1 = lm(y ~ x, data = dat)
 coef(lm1)
 ```
 
 ```{r}
-gam1 = gam(y ~ s(x, k = 7), data = sim)
+gam1 = gam(y ~ s(x, k = 7), data = dat)
 coef(gam1)
 ```
 
@@ -540,19 +527,10 @@ ggplot(airqu, aes(y = Ozone, x = Wind)) +
 ---
 # Overfitting?
 
-### SOLUTION:
-
-Penalize departure from smoothness:
+SOLUTION: Penalize departure from smoothness:
 
 
 $$P(f) = \int f''(x)^2 dx = \beta^T\mathbf{S}\beta$$
-
-.footnote[
-<https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf>
-]
-
----
-# Smoothing
 
 $$Fit = Likelihood - \lambda \times Wiggliness$$
 
@@ -574,8 +552,6 @@ $$\hat{\beta} = \operatorname{arg min}_\beta \|y-X\beta\|^2 + \lambda\beta^TS\be
   - Controls the trade-off between Likelihood and Wiggliness
 
 .footnote[
-<https://noamross.github.io/gams-in-r-course>
-
 <https://www.maths.ed.ac.uk/~swood34/mgcv/tampere/basis-penalty.pdf>
 ]
 
@@ -615,26 +591,26 @@ ML...Maximum Likelihood
 
 ```{r echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 sp1 = gam(y ~ s(x, k = 100),
-          data = sim,
+          data = dat,
           sp = 0)
-sim$pr1 = predict(sp1, type = 'response')
-gg_sp1 = ggplot(sim, aes(x = x)) +
+dat$pr1 = predict(sp1, type = 'response')
+gg_sp1 = ggplot(dat, aes(x = x)) +
   geom_point(aes(y = y)) +
   geom_line(aes(y = pr1), lwd = 1.1, col = 'red')
 
 sp2 = gam(y ~ s(x, k = 100),
-          data = sim,
+          data = dat,
           sp = 1e5)
-sim$pr2 = predict(sp2, type = 'response')
-gg_sp2 = ggplot(sim, aes(x = x)) +
+dat$pr2 = predict(sp2, type = 'response')
+gg_sp2 = ggplot(dat, aes(x = x)) +
   geom_point(aes(y = y)) +
   geom_line(aes(y = pr2), lwd = 1.1, col = 'red')
 
 sp3 = gam(y ~ s(x, k = 100),
-          data = sim,
+          data = dat,
           method = 'REML')
-sim$pr3 = predict(sp3, type = 'response')
-gg_sp3 = ggplot(sim, aes(x = x)) +
+dat$pr3 = predict(sp3, type = 'response')
+gg_sp3 = ggplot(dat, aes(x = x)) +
   geom_point(aes(y = y)) +
   geom_line(aes(y = pr3), lwd = 1.1, col = 'red')
 ```
@@ -872,7 +848,7 @@ mgcv::gamm(y ~ s(x),
            random = list(fac = ~1))
 ```
 
-- Calls `gamm4::gamm4()`
+- Calls `lme4::lmer()`
 
 ```{r eval=FALSE}
 gamm4::gamm4(y ~ s(x),
@@ -971,6 +947,7 @@ new = with(mack,
                        salinity = seq(min(salinity, na.rm = TRUE),
                                       max(salinity, na.rm = TRUE),
                                       length.out = 100)))
+require(data.table)
 setDT(new) # convert to data.table
 # predict
 prd = predict(mod,
@@ -989,15 +966,16 @@ new[ , `:=`
 # Model plot
 ```{r, fig.height=3.5, warning=FALSE}
 ggplot(new, aes(y = fit, x = salinity)) +
-  geom_line() +
   geom_point(data = mack, aes(y = egg.count)) +
-  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1)
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.4) +
+  geom_line(size = 1.5, col = 'blue')
 ```
 
 ---
 # Model checking
 
 ```{r echo=FALSE, fig.height=5}
+par(mfrow = c(2,2))
 gam.check(mod)
 ```
 
@@ -1026,6 +1004,7 @@ mt2 = gam(mpg ~ s(hp) + s(disp),
           data = mtcars,
           family = 'gaussian',
           method = 'REML')
+par(mfrow = c(2,2))
 gam.check(mt2)
 ```
 
@@ -1041,7 +1020,7 @@ gam.check(mt2)
   - `select = TRUE`
   - Adds second penalty to all terms
     - Penalizes the NULL space
-    - "Shrinkage", similar to Ridge Regression, Lasso
+    - "Shrinkage" (Ridge Regression, Lasso)
 
 ```{r, eval=FALSE}
 gam(y ~ s(x1) + s(x2, bs = 'ts') + s(x3),
@@ -1358,7 +1337,7 @@ ggplot(dat, aes(x = doy, col = site_id)) +
 mGI = gam(value_fin ~
             s(doy, bs = 'cc', k = 12) +
             s(doy, by = site_id_f, bs = 'cc', k = 12) +
-            s(site_id_f, bs = 're'),
+            s(site_id_f, bs = 're'), # explicitly needed
           data = dat,
           family = Gamma(link = 'log'))
 ```
@@ -1380,7 +1359,7 @@ mGI = gam(value_fin ~
 mGI = gam(value_fin ~
             s(doy, bs = 'cc', k = 12) +
             s(doy, by = site_id_f, bs = 'cc', k = 12) +
-            s(site_id_f, bs = 're'),
+            s(site_id_f, bs = 're'), # explicitly needed
           data = dat,
           family = Gamma(link = 'log'))
 ```
@@ -1434,7 +1413,7 @@ ggplot(dat, aes(x = doy, col = site_id)) +
 ```{r warning=FALSE}
 mI = gam(value_fin ~
            s(doy, by = site_id_f, bs = 'cc', k = 12) +
-           s(site_id_f, bs = 're'),
+           s(site_id_f, bs = 're'), # explicitly needed
          data = dat,
          family = Gamma(link = 'log'))
 ```
@@ -1505,18 +1484,31 @@ Wood (2011)
 Burnham & Anderson (1998)
 
 ---
-class: middle
-# [Thank you for your attention!]()
+layout: false
+# [Moving Beyond Linearity](https://andschar.github.io/teaching/GAM-intro.html)
 
-Andreas Scharmüller
+## Thank you for your attention!
 
-[@andschar](https://twitter.com/andschar)
+<https://andschar.github.io/teaching>
 
-<https://andschar.github.io>
+__Andreas Scharmüller__<br>
+
+Quantitative Landscape Ecology<br/>
+iES Landau, Institute for Environmental Sciences<br>
+University of Koblenz-Landau<br>
+University of Strasbourg
+
+<img src="https://upload.wikimedia.org/wikipedia/de/thumb/9/9f/Twitter_bird_logo_2012.svg/1259px-Twitter_bird_logo_2012.svg.png" width="20"> @andschar <br/>
+<img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"> andschar@protonmail.com
+
+<img src="https://www.uni-koblenz-landau.de/de/landau/fb7/umweltwissenschaften/logos/land-ecol-neu.jpg" width="100">
+<img src="https://www.uni-koblenz-landau.de/de/uni/organisation/verwaltung/abteilungen/abt-1/dokumente-ab1/uni-logo-farbig.jpg" width="200">
 
 
 
 
+
+<!-- -->
 <!-- OLD MATERIAL -->
 
 <!-- --- -->
@@ -1644,8 +1636,63 @@ Andreas Scharmüller
 <!-- plot(spr_GI, pages = 1) -->
 <!-- ``` -->
 
+<!-- --- -->
+<!-- # Splines -->
 
+<!-- ```{r echo=FALSE, fig.height=5} -->
+<!-- # TODO how should the knots be ordered? -->
 
+<!-- k = 7 -->
+
+<!-- knots = data.frame(x = seq(min(dat$x), max(dat$x), length.out = k)) -->
+<!-- spl = smoothCon(s(x, bs = 'cr', k = k), -->
+<!--                 data = dat,#[ ,'x', drop = FALSE], -->
+<!--                 knots = knots)[[1]] -->
+<!-- coefs = coef(gam(y ~ s(x, bs = 'cr', k = k), data = dat)) -->
+<!-- fx = spl$X %*% coefs -->
+<!-- bs_coef = sweep(spl$X, 2, coefs, "*") -->
+<!-- bs1 = sweep(spl$X, 2, rep(1, k), "*") -->
+
+<!-- # plot -->
+<!-- ylim <- range(fx, bs_coef) -->
+<!-- op <- par(mar = c(5,4,1,2) + 0.1) -->
+<!-- layout(matrix(1:2, ncol = 2)) -->
+<!-- # 1 -->
+<!-- plot(fx ~ dat$x, type = "n", ylim = ylim, ylab = "", xlab = "x") -->
+<!-- abline(v = knots$x, lty = "dotted") -->
+<!-- matlines(dat$x, bs1, lwd = 2) -->
+<!-- title(ylab = expression(f(x)), line = 2.75) -->
+<!-- # 2 -->
+<!-- plot(fx ~ dat$x, type = "n", ylim = ylim, ylab = "", xlab = "x") -->
+<!-- abline(v = knots$x, lty = "dotted") -->
+<!-- matlines(dat$x, bs_coef, lwd = 2) -->
+<!-- lines(fx ~ dat$x, lwd = 4) -->
+<!-- title(ylab = expression(f(x)), line = 2.75) -->
+<!-- par(op) -->
+<!-- layout(1) -->
+<!-- ``` -->
+
+<!-- --- -->
+<!-- # Splines -->
+
+<!-- - Splines replace a predictor variable, with a set of synthetic predictor variables. -->
+
+<!-- - Family of functions or transformations that can be applied to $x$ -->
+
+<!--     - Polynomial basis function -->
+
+<!--     $$f_j(x_i) = x_i^j$$ -->
+
+<!--     - Piecewise constant basis function: -->
+
+<!--     $$f_j(x_i) = I(c_j \leq x_i \leq c_{j+1})$$ -->
+<!-- - Penalized splines: reduce wiggliness -->
+
+<!-- .footnote[ -->
+<!-- https://www.youtube.com/watch?v=ENxTrFf9a7c&t=2226 -->
+
+<!-- https://www.tjmahr.com/random-effects-penalized-splines-same-thing/ -->
+<!-- ] -->
 
 
 

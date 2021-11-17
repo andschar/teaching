@@ -22,8 +22,7 @@ theme_set(theme_minimal())
 
 # Data
 ```{r}
-pest = readRDS('/home/scharmueller/Projects/teaching/GAM/data/pesticides.rds')
-pest = readRDS('GAM/data/pesticides.rds')
+pest = readRDS('~/Projects/teaching/GAM/data/pesticides.rds')
 ```
 
 # Prepare
