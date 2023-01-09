@@ -289,15 +289,10 @@ $$f_j(x_j) = \sum_{k=1}^K \beta_{j,k} b_{j,k} (x_j)$$
 
 - Smoothing function: $f()$
 
-    - (Penalized) Splines
-    
-    - Knots ($K$)
+- $b_{j,k}$ - $K$ Basis functions for each covariate $x_j$
 
-- $K$ Basis functions: $b_{j,k}$
+- $\beta_{j,k}$ - $K$ Coefficients for each covariate $x_j$
 
-- $K$ Coefficients: $\beta_{j,k}$
-
-- Smoothing parameter
 
 ---
 # Generalized Additive Models (GAMs)
@@ -380,7 +375,7 @@ ggplot(airqu, aes(y = Ozone, x = Wind)) +
   geom_point() +
   geom_line(aes(y = fit1),
             color = 'maroon',
-            size = 1.5)
+            linewidth = 1.5)
 ```
 
 ---
@@ -441,7 +436,7 @@ ggmatplot(lpm2_weighted, x_axis_column = 1) +
                color = "maroon", 
                fun = sum, 
                geom = "line", 
-               size = 1.5) +
+               linewidth = 1.5) +
   labs(title = NULL, y = 'Ozone', x = 'Wind')
 ```
 
@@ -643,7 +638,7 @@ class: center, inverse, middle
 
 - Original GAM R-package
 
-#### `mgcv` pagckage
+#### `mgcv` package
 
 - Most used package
 
@@ -683,7 +678,7 @@ class: center, inverse, middle
 ---
 # GAMs in R
 
-R-function:
+R-function
 
 ```{r eval=FALSE}
 require(mgcv)
@@ -698,7 +693,7 @@ gam(y ~ s(x1, bs = 'tp', k = -1) + x2, # formula
 ---
 # GAMs in R
 
-Formula:
+Formula
 
 ```{r eval=FALSE}
 require(mgcv)
@@ -1455,9 +1450,11 @@ class: center, middle
 - Noam Ross Github
   - <https://github.com/noamross/gam-resources>
 - Environmental computing
- - <http://environmentalcomputing.net/intro-to-gams>
+  - <http://environmentalcomputing.net/intro-to-gams>
 - Random effects and penalized splines are the same thing
- - <https://www.tjmahr.com/random-effects-penalized-splines-same-thing>
+  - <https://www.tjmahr.com/random-effects-penalized-splines-same-thing>
+- GAM course
+  - <https://noamross.github.io/mgcv-esa-2018>
 
 ---
 # Slides
@@ -1498,8 +1495,8 @@ iES Landau, Institute for Environmental Sciences<br>
 University of Koblenz-Landau<br>
 University of Strasbourg
 
-<img src="https://upload.wikimedia.org/wikipedia/de/thumb/9/9f/Twitter_bird_logo_2012.svg/1259px-Twitter_bird_logo_2012.svg.png" width="20"> @andschar <br/>
-<img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"> andschar@protonmail.com
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Twitter-logo.svg/500px-Twitter-logo.svg.png" width="20"> @andschar <br/>
+<img src="https://seeklogo.com/images/M/mail-icon-logo-28FE0635D0-seeklogo.com.png" width="20"> andschar@proton.me
 
 <img src="https://www.uni-koblenz-landau.de/de/landau/fb7/umweltwissenschaften/logos/land-ecol-neu.jpg" width="100">
 <img src="https://www.uni-koblenz-landau.de/de/uni/organisation/verwaltung/abteilungen/abt-1/dokumente-ab1/uni-logo-farbig.jpg" width="200">
@@ -1508,7 +1505,6 @@ University of Strasbourg
 
 
 
-<!-- -->
 <!-- OLD MATERIAL -->
 
 <!-- --- -->

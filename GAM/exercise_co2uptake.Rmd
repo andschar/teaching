@@ -7,12 +7,15 @@ editor_options:
 
 ## Task
 
-CO 2 uptake in grasses under varying concentrations of CO2.
-Two Locations: Mississippi, Quebec (Variable: Type)
+CO2 uptake in grasses under varying concentrations of CO2.
+Two Locations: Mississippi, Quebec (Variable: Type).
 
 ## Task
 
-Model the CO2 uptake of plants between two different locations.
+Model the CO2 `uptake` of plants between different locations. Use the covariates
+`conc`, the CO2 concentration and `Plant_uo` in the model.
+
+Create a GS, GI, S, and I model as described in the lecture (resp. Pedersen et al. 2019).
 
 ## Data
 
@@ -20,4 +23,19 @@ Model the CO2 uptake of plants between two different locations.
 CO2$Plant_uo = factor(CO2$Plant, ordered = FALSE) # remove ordering factor
 
 head(CO2)
+```
+
+## Models
+
+### Model G
+
+```{r}
+modG = gam(uptake ~ s(conc, k = 5, bs = "tp") +
+             s(Plant_uo, k = 12, bs = "re"),
+           data = CO2,
+           method = "REML",
+           family = "gaussian")
+summary(modG)
+plot(modG, pages = 1)
+AIC(modG)
 ```
